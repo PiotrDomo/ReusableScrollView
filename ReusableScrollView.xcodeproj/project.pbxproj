@@ -19,6 +19,8 @@
 		DF75D331209F4CE500685DB1 /* ScrollEngine_2_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32A209F4CE500685DB1 /* ScrollEngine_2_Tests.swift */; };
 		DF75D332209F4CE500685DB1 /* ScrollEngine_1_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32B209F4CE500685DB1 /* ScrollEngine_1_Tests.swift */; };
 		DF75D333209F4CE500685DB1 /* ScrollEngine_4_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32C209F4CE500685DB1 /* ScrollEngine_4_Tests.swift */; };
+		DFAC34ED20A32EF700E0189B /* ReusableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */; };
+		DFAC34EF20A3315700E0189B /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAC34EE20A3315700E0189B /* ReusableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		DF75D32A209F4CE500685DB1 /* ScrollEngine_2_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_2_Tests.swift; sourceTree = "<group>"; };
 		DF75D32B209F4CE500685DB1 /* ScrollEngine_1_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_1_Tests.swift; sourceTree = "<group>"; };
 		DF75D32C209F4CE500685DB1 /* ScrollEngine_4_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_4_Tests.swift; sourceTree = "<group>"; };
+		DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableScrollView.swift; sourceTree = "<group>"; };
+		DFAC34EE20A3315700E0189B /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +96,8 @@
 				DF75D321209F4CA000685DB1 /* ScrollEngine.swift */,
 				DF75D31F209F4CA000685DB1 /* ScrollViewModel.swift */,
 				DF75D320209F4CA000685DB1 /* ServiceError.swift */,
+				DFAC34EE20A3315700E0189B /* ReusableView.swift */,
+				DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */,
 				DF75D2FC209F4B1C00685DB1 /* ReusableScrollView.h */,
 				DF75D2FD209F4B1C00685DB1 /* Info.plist */,
 			);
@@ -230,6 +236,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFAC34ED20A32EF700E0189B /* ReusableScrollView.swift in Sources */,
+				DFAC34EF20A3315700E0189B /* ReusableView.swift in Sources */,
 				DF75D324209F4CA100685DB1 /* ScrollEngine.swift in Sources */,
 				DF75D323209F4CA100685DB1 /* ServiceError.swift in Sources */,
 				DF75D322209F4CA100685DB1 /* ScrollViewModel.swift in Sources */,

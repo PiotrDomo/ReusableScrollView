@@ -19,6 +19,8 @@ import Foundation
     
     var numberOfViews:UInt {get}
     
+    var initialIndex:Int {get}
+    
 }
 
 @objc public protocol ScrollEngineDelegate: class {
@@ -42,7 +44,6 @@ open class ScrollEngine:NSObject {
         }
     }
     
-    private var _absoluteIndex:Int
     private var _models:[ScrollViewModel]?
     private static var _maxPool:UInt = 5
     
@@ -70,13 +71,15 @@ open class ScrollEngine:NSObject {
         return count
     }()
     
-    // MARK: Lifecycle
-    
-    public required init(index:Int) {
+    lazy private var _absoluteIndex:Int = {
+        guard
+            let index = self.dataSource?.initialIndex
+            else {
+                return 0
+        }
         
-        _absoluteIndex = index
-        
-    }
+        return index
+    }()
     
     // MARK: Public
     
