@@ -29,12 +29,7 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
     
     private let scrollEngine:ScrollEngine = ScrollEngine()
     weak private var _delegate:ReusableScrollViewDelegate?
-    
-    #if TARGET_INTERFACE_BUILDER
-    @IBOutlet open weak var dataSource:AnyObject?
-    #else
-    weak open var dataSource:ReusableScrollViewDataSource?
-    #endif
+    @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
     
     override weak open var delegate: UIScrollViewDelegate? {
         didSet {
