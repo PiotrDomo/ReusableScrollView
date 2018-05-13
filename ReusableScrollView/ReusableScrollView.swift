@@ -71,6 +71,26 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
         
     }
+    
+    // MARK: Overriding
+    
+    override open func responds(to aSelector: Selector!) -> Bool {
+        
+        let respondesToSelector: Bool = super.responds(to: aSelector) ||  _delegate?.responds(to: aSelector) == true
+        
+        return respondesToSelector
+    }
+    
+    override open func forwardingTarget(for aSelector: Selector!) -> Any? {
+        print("forwardingTarget called for selector", aSelector)
+        
+        if _delegate?.responds(to: aSelector) == true {
+            return _delegate
+        }
+        else {
+            return super.forwardingTarget(for: aSelector)
+        }
+    }
 }
 
 extension ReusableScrollView: UIScrollViewDelegate {
@@ -112,27 +132,6 @@ extension ReusableScrollView: UIScrollViewDelegate {
         _delegate?.scrollViewDidEndDecelerating?(scrollView)
     }
     
-}
-
-extension ReusableScrollView {
-    
-    // MARK: Overriding
-    
-    override open func responds(to aSelector: Selector!) -> Bool {
-        
-        let respondesToSelector: Bool = super.responds(to: aSelector) ||  _delegate?.responds(to: aSelector) == true
-        
-        return respondesToSelector
-    }
-    
-    override open func forwardingTarget(for aSelector: Selector!) -> Any? {
-        if _delegate?.responds(to: aSelector) == true {
-            return _delegate
-        }
-        else {
-            return super.forwardingTarget(for: aSelector)
-        }
-    }
 }
 
 extension ReusableScrollView {
