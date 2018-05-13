@@ -44,8 +44,8 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
     }
     
-    override open func layoutSubviews() {
-        super.layoutSubviews()
+    override open func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
         
         setup()
         
@@ -71,14 +71,19 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
         
     }
+}
+
+extension ReusableScrollView: UIScrollViewDelegate {
     
     // MARK: UIScrollViewdelegate
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         _lastContentOffset = scrollView.contentOffset.x
+        
+        _delegate?.scrollViewWillBeginDragging?(scrollView)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // Simply check the half of the width of view was scrolled by defining what is going to be following index
         // If the following index is the same as cached index then the scroll should not happen
@@ -89,10 +94,50 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
         
         updateEngine()
+        
+        _delegate?.scrollViewDidScroll?(scrollView)
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let offset = _lastContentOffset else {
+            return
+        }
+        
+        if offset > scrollView.contentOffset.x {
+            scrollEngine.previous()
+        } else if offset < scrollView.contentOffset.x {
+            scrollEngine.next()
+        }
+        
+        _delegate?.scrollViewDidEndDecelerating?(scrollView)
+    }
+    
+}
+
+extension ReusableScrollView {
+    
+    // MARK: Overriding
+    
+    override open func responds(to aSelector: Selector!) -> Bool {
+        
+        let respondesToSelector: Bool = super.responds(to: aSelector) ||  _delegate?.responds(to: aSelector) == true
+        
+        return respondesToSelector
+    }
+    
+    override open func forwardingTarget(for aSelector: Selector!) -> Any? {
+        if _delegate?.responds(to: aSelector) == true {
+            return _delegate
+        }
+        else {
+            return super.forwardingTarget(for: aSelector)
+        }
     }
 }
 
 extension ReusableScrollView {
+    
+    // MARK: ScrollEngineProtocol
     
     public var size: CGSize {
         get {
