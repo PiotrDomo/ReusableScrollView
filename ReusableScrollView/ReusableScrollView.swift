@@ -32,8 +32,12 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
     
     override weak open var delegate: UIScrollViewDelegate? {
-        didSet {
-            _delegate = delegate as? ReusableScrollViewDelegate
+        get {
+            return _delegate
+        }
+        set {
+            _delegate = newValue as? ReusableScrollViewDelegate
+            super.delegate = self
         }
     }
     
@@ -75,8 +79,6 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
     // MARK: Overriding
     
     override open func responds(to aSelector: Selector) -> Bool {
-        
-        print("responds called for selector", aSelector)
         
         let respondesToSelector: Bool = super.responds(to: aSelector) ||  _delegate?.responds(to: aSelector) == true
         
