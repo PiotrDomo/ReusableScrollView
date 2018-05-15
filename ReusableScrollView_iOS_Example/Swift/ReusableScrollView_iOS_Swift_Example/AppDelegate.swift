@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  ReusableScrollView_iOS_Example
+//  ReusableScrollView_iOS_Swift_Example
 //
-//  Created by sumofighter666 on 06.05.18.
+//  Created by Piotr Domowicz on 15.05.18.
 //  Copyright © 2018 sumofighter666. All rights reserved.
 //
 
