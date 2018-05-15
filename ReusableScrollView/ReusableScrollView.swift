@@ -86,8 +86,6 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
     }
     
     override open func forwardingTarget(for aSelector: Selector!) -> Any? {
-        print("forwardingTarget called for selector", aSelector)
-        
         if _delegate?.responds(to: aSelector) == true {
             return _delegate
         }
@@ -113,7 +111,10 @@ extension ReusableScrollView: UIScrollViewDelegate {
         // If the following index is the same as cached index then the scroll should not happen
         let followingIndex = Int(floor((self.contentOffset.x - size.width / 2) / size.width))
         
-        guard _currentIndex != followingIndex else {
+        guard
+            _currentIndex != followingIndex,
+            _currentIndex == scrollEngine.currentIndex
+        else {
             return
         }
         
