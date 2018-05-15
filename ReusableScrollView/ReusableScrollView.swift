@@ -111,30 +111,15 @@ extension ReusableScrollView: UIScrollViewDelegate {
         // If the following index is the same as cached index then the scroll should not happen
         let followingIndex = Int(floor((self.contentOffset.x - size.width / 2) / size.width))
         
-        guard
-            _currentIndex != followingIndex,
-            _currentIndex == scrollEngine.currentIndex
-        else {
+        guard followingIndex != _currentIndex else {
             return
         }
+        
+        debugPrint("\(_currentIndex) != \(scrollEngine.currentIndex) != \(followingIndex)")
         
         updateEngine()
         
         _delegate?.scrollViewDidScroll?(scrollView)
-    }
-    
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        guard let offset = _lastContentOffset else {
-            return
-        }
-        
-        if offset > scrollView.contentOffset.x {
-            scrollEngine.previous()
-        } else if offset < scrollView.contentOffset.x {
-            scrollEngine.next()
-        }
-        
-        _delegate?.scrollViewDidEndDecelerating?(scrollView)
     }
     
 }
