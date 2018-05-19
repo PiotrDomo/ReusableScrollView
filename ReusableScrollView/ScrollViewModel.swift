@@ -13,15 +13,15 @@ import Foundation
      Overflown cases are usuaully used 
      */
     
-    case previousOverflown          = -4
-    case beforeBeforePrevious       = -3
-    case beforePrevious             = -2
-    case previous                   = -1
-    case current                    = 0
-    case next                       = 1
-    case afterNext                  = 2
-    case afterAfterNext             = 3
-    case nextOverflown              = 4
+    case previousOverflown = -4
+    case beforeBeforePrevious = -3
+    case beforePrevious = -2
+    case previous = -1
+    case current = 0
+    case next = 1
+    case afterNext = 2
+    case afterAfterNext = 3
+    case nextOverflown = 4
     
     var description:String {
         switch self {
@@ -49,14 +49,10 @@ import Foundation
 
 @objc public final class ScrollViewModel:NSObject {
     
-    public var absoluteIndex:Int = 0
-    public var relativeIndex:RelativeIndex = RelativeIndex.current
+    @objc public var absoluteIndex:Int = 0
+    @objc public var relativeIndex:RelativeIndex = RelativeIndex.current
     
-    // MARK: Private properties
-    
-    private let _size:CGSize
-    
-    public var position:CGPoint {
+    @objc public var position:CGPoint {
         get {
             var x:CGFloat = 0.0
             
@@ -67,8 +63,12 @@ import Foundation
             return CGPoint(x: x, y: 0.0)
         }
     }
+
+    // MARK: Private properties
     
-    public init(size:CGSize) {
+    private let _size:CGSize
+    
+    @objc public init(size:CGSize) {
         _size = size
     }
 }

@@ -6,24 +6,70 @@
 //  Copyright © 2018 sumofighter666. All rights reserved.
 //
 
-#import "ViewController.h"
+@import ReusableScrollView;
 
-@interface ViewController ()
+#import "ViewController.h"
+#import "ReusableScrollView.h"
+
+@interface ViewController () <ReusableScrollViewDelegate, ReusableScrollViewDataSource>
+
+@property (weak, nonatomic) IBOutlet ReusableScrollView *scrollView;
+@property (nonatomic, assign) NSUInteger viewCount;
+@property (nonatomic, assign) CGSize size;
 
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    CGFloat contentWidth = self.size.width * (CGFloat)self.viewCount;
+    
+    self.scrollView.contentSize         = CGSizeMake(contentWidth, self.size.height);
+    self.scrollView.layer.borderColor   = [UIColor blackColor].CGColor;
+    self.scrollView.layer.borderWidth   = 1;
+    
 }
 
+#pragma mark - Getters
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (CGSize)size {
+    return self.scrollView.bounds.size;
 }
 
+- (NSUInteger)viewCount {
+    return 10;
+}
+
+@synthesize initialIndex;
+
+@synthesize numberOfViews;
+
+- (NSUInteger)numberOfViews {
+    return 10;
+}
+
+- (NSInteger)initialIndex {
+    return 7;
+}
+
+- (ReusableView * _Nonnull)reusableScrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView * _Nonnull)reusableScrollView
+                                                                            model:(ScrollViewModel * _Nonnull)model {
+    
+    CGRect frame = CGRectMake(model.position.x, model.position.y, self.size.width, self.size.height);
+    
+    ReusableView *reusableView      = [[ReusableView alloc] initWithFrame:frame];
+    reusableView.backgroundColor    = [UIColor whiteColor];
+    reusableView.alpha              = model.relativeIndex == RelativeIndexCurrent ? 1 : 0.5;
+    reusableView.layer.borderColor  = [UIColor redColor].CGColor;
+    reusableView.layer.borderWidth  = 1;
+    
+    return reusableView;
+}
+
+- (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
+    //
+}
 
 @end

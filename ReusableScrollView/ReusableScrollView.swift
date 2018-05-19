@@ -71,9 +71,12 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         
         for _ in 0..<abs(adjustVariable) {
             adjustVariable > 0 ? scrollEngine.previous() : scrollEngine.next()
-            print("\(scrollEngine.currentIndex) - \(_currentIndex)")
+            
+            logDebug("\n-updateEngine()")
+            logDebug("Scroll engine updated")
+            logVerbose("   Current index of view defined by event: \(scrollEngine.currentIndex)")
+            logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
         }
-        
     }
     
     // MARK: Overriding
@@ -115,7 +118,10 @@ extension ReusableScrollView: UIScrollViewDelegate {
             return
         }
         
-        debugPrint("\(_currentIndex) != \(scrollEngine.currentIndex) != \(followingIndex)")
+        logVerbose("\n-scrollViewDidScroll")
+        logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
+        logVerbose("   Current index of view defined by event: \(scrollEngine.currentIndex)")
+        logVerbose("   Following index of view calculated from scroll event: \(followingIndex)")
         
         updateEngine()
         

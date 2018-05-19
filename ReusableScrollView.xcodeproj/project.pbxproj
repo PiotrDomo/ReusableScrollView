@@ -19,6 +19,7 @@
 		DF75D331209F4CE500685DB1 /* ScrollEngine_2_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32A209F4CE500685DB1 /* ScrollEngine_2_Tests.swift */; };
 		DF75D332209F4CE500685DB1 /* ScrollEngine_1_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32B209F4CE500685DB1 /* ScrollEngine_1_Tests.swift */; };
 		DF75D333209F4CE500685DB1 /* ScrollEngine_4_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D32C209F4CE500685DB1 /* ScrollEngine_4_Tests.swift */; };
+		DFA1441D20AFE0AB00A8AB92 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA1441C20AFE0AB00A8AB92 /* Logger.swift */; };
 		DFAC34ED20A32EF700E0189B /* ReusableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */; };
 		DFAC34EF20A3315700E0189B /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAC34EE20A3315700E0189B /* ReusableView.swift */; };
 /* End PBXBuildFile section */
@@ -49,6 +50,7 @@
 		DF75D32A209F4CE500685DB1 /* ScrollEngine_2_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_2_Tests.swift; sourceTree = "<group>"; };
 		DF75D32B209F4CE500685DB1 /* ScrollEngine_1_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_1_Tests.swift; sourceTree = "<group>"; };
 		DF75D32C209F4CE500685DB1 /* ScrollEngine_4_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_4_Tests.swift; sourceTree = "<group>"; };
+		DFA1441C20AFE0AB00A8AB92 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableScrollView.swift; sourceTree = "<group>"; };
 		DFAC34EE20A3315700E0189B /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,6 +101,7 @@
 				DFAC34EE20A3315700E0189B /* ReusableView.swift */,
 				DFAC34EC20A32EF700E0189B /* ReusableScrollView.swift */,
 				DF75D2FC209F4B1C00685DB1 /* ReusableScrollView.h */,
+				DFA1441C20AFE0AB00A8AB92 /* Logger.swift */,
 				DF75D2FD209F4B1C00685DB1 /* Info.plist */,
 			);
 			path = ReusableScrollView;
@@ -237,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DFAC34ED20A32EF700E0189B /* ReusableScrollView.swift in Sources */,
+				DFA1441D20AFE0AB00A8AB92 /* Logger.swift in Sources */,
 				DFAC34EF20A3315700E0189B /* ReusableView.swift in Sources */,
 				DF75D324209F4CA100685DB1 /* ScrollEngine.swift in Sources */,
 				DF75D323209F4CA100685DB1 /* ServiceError.swift in Sources */,
@@ -407,6 +411,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = sumofighter666.ReusableScrollView;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -433,6 +438,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = sumofighter666.ReusableScrollView;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
