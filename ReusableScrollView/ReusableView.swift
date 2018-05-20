@@ -23,9 +23,9 @@
 
 import Foundation
 
-open class ReusableView:UIView {
+@objc open class ReusableView:UIView {
     
-    var viewModel:ScrollViewModel?
+    @objc public var viewModel:ScrollViewModel?
     
     func updateFrame() {
         guard let model = viewModel else {

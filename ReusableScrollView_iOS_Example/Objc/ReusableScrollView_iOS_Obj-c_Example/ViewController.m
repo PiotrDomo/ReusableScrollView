@@ -53,6 +53,10 @@
 - (NSInteger)initialIndex {
     return 7;
 }
+    
+- (NSTimeInterval)focusDelay {
+    return 2;
+}
 
 - (ReusableView * _Nonnull)reusableScrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView * _Nonnull)reusableScrollView
                                                                             model:(ScrollViewModel * _Nonnull)model {
@@ -65,11 +69,19 @@
     reusableView.layer.borderColor  = [UIColor redColor].CGColor;
     reusableView.layer.borderWidth  = 1;
     
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20.f, 20.f, 40.f, 80.f)];
+    label.tag = 1;
+    
+    [reusableView addSubview:label];
+    
     return reusableView;
 }
 
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
-    //
+    
+    UILabel *label = (UILabel *)[reusableView viewWithTag:1];
+    
+    label.text = [NSString stringWithFormat:@"%ld", reusableView.viewModel.absoluteIndex];
 }
 
 @end

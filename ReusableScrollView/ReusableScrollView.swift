@@ -25,9 +25,11 @@ import UIKit
 
 @objc public protocol ReusableScrollViewDataSource: class {
     
-    var numberOfViews:UInt {get}
+    var numberOfViews:UInt { get }
     
-    var initialIndex:Int {get}
+    var initialIndex:Int { get }
+    
+    var focusDelay:TimeInterval { get }
     
 }
 
@@ -45,6 +47,7 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
     private let scrollEngine:ScrollEngine = ScrollEngine()
     weak private var _delegate:ReusableScrollViewDelegate?
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
+    var task:DispatchWorkItem?
     
     override weak open var delegate: UIScrollViewDelegate? {
         get {
@@ -94,6 +97,15 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
     }
     
+    private func focus() {
+        guard let time = self.dataSource?.focusDelay, let confTask = task else {
+            return
+        }
+        
+        // execute task
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: confTask)
+    }
+    
     // MARK: Overriding
     
     override open func responds(to aSelector: Selector) -> Bool {
@@ -120,6 +132,13 @@ extension ReusableScrollView: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         _lastContentOffset = scrollView.contentOffset.x
         
+        guard let confTask = task else {
+            _delegate?.scrollViewWillBeginDragging?(scrollView)
+            return
+        }
+        
+        confTask.cancel()
+        
         _delegate?.scrollViewWillBeginDragging?(scrollView)
     }
     
@@ -144,6 +163,46 @@ extension ReusableScrollView: UIScrollViewDelegate {
     }
     
 }
+
+//extension ReusableScrollView {
+//
+//    func delay(time:TimeInterval, closure: @escaping ()->()) ->  dispatch_cancelable_closure? {
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+//            closure()
+//        }
+//
+//
+//        var closure:dispatch_block_t? = closure
+//        var cancelableClosure:dispatch_cancelable_closure?
+//
+//        let delayedClosure:dispatch_cancelable_closure = { cancel in
+//            if let clsr = closure {
+//                if (cancel == false) {
+//                    DispatchQueue.async(DispatchQueue.main, clsr)
+//                }
+//            }
+//            closure = nil
+//            cancelableClosure = nil
+//        }
+//
+//        cancelableClosure = delayedClosure
+//
+//        dispatch_later {
+//            if let delayedClosure = cancelableClosure {
+//                delayedClosure(cancel: false)
+//            }
+//        }
+//
+//        return cancelableClosure;
+//    }
+//
+//    func cancel_delay(closure:dispatch_cancelable_closure?) {
+//        if closure != nil {
+//            closure!(cancel: true)
+//        }
+//    }
+//}
 
 extension ReusableScrollView {
     
@@ -184,9 +243,23 @@ extension ReusableScrollView {
     public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel]) {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
+        logDebug("\n-didUpdateRelativeIndices(direction:, models:)")
+        
         for i in 0 ..< models.count {
             contentViews[i].viewModel = models[i]
             contentViews[i].updateFrame()
+            
+            logVerbose("   Current relative index of reusable view: \(models[i].relativeIndex.rawValue)")
+            
+            guard models[i].relativeIndex == RelativeIndex.current else {
+                continue
+            }
+            
+            task = DispatchWorkItem {
+                self._delegate?.reusableViewDidFocus(reusableView: contentViews[i])
+            }
+            
+            focus()
         }
     }
     
