@@ -23,12 +23,12 @@
 
 import Foundation
 
-@objc public enum ScrollingDirection:Int {
+public enum ScrollingDirection:Int {
     case previous = -1
     case next = 1
 }
 
-@objc public protocol ScrollEngineDataSource: class {
+public protocol ScrollEngineDataSource: class {
     
     var size:CGSize {get}
     
@@ -38,11 +38,11 @@ import Foundation
     
 }
 
-@objc public protocol ScrollEngineDelegate: class {
+public protocol ScrollEngineDelegate: class {
     
     func didFinishViewDecalration(engine:ScrollEngine, models:[ScrollViewModel]) -> Void
 
-    func didUpdateRelativeIndices(direction:ScrollingDirection, models:[ScrollViewModel]) -> Void
+    func didUpdateRelativeIndices(direction:ScrollingDirection, models:[ScrollViewModel], addedIndex:Int?) -> Void
     
     func didRequestView(engine:ScrollEngine, model:ScrollViewModel) -> Void
 }
@@ -104,7 +104,7 @@ open class ScrollEngine:NSObject {
         
         _models = ScrollViewModel.modelSet(size: _screenSize, count: maxPool)
         
-        _models?.update(_absoluteIndex, _numberOfViews)
+        let _ = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
         
         _models?.forEach { model in
             self.delegate?.didRequestView(engine:self, model: model)
@@ -129,13 +129,13 @@ open class ScrollEngine:NSObject {
         
         _absoluteIndex += 1
         
-        _models?.update(_absoluteIndex, _numberOfViews)
+        let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
         
         guard let models = _models else {
             return
         }
         
-        delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.next, models: models)
+        delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.next, models: models, addedIndex: addedIndex)
         
     }
     
@@ -151,13 +151,13 @@ open class ScrollEngine:NSObject {
                 return
         }
         
-        _models?.update(_absoluteIndex, _numberOfViews)
+        let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
         
         guard let models = _models else {
             return
         }
         
-        delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.previous, models: models)
+        delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.previous, models: models, addedIndex: addedIndex)
     }
     
 }
@@ -176,7 +176,7 @@ extension ScrollViewModel {
         return models
     }
     
-    fileprivate func update(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex) {
+    fileprivate func updateModel(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex) {
         self.absoluteIndex = absoluteIndex
         self.relativeIndex = relativeIndex
     }
@@ -185,33 +185,38 @@ extension ScrollViewModel {
 
 extension Array where Iterator.Element == ScrollViewModel {
     
-    fileprivate func update(_ absoluteIndex:Int, _ numberOfViews:UInt) {
+    /**
+ 
+     Returns only new added index, otherwise returns nil
+ 
+    */
+    
+    fileprivate func update(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
         
-            
             switch absoluteIndex {
             case 0:
                 
                 for i in 1...self.count {
                     let index = i - 1
                     guard let relativeIndex = RelativeIndex(rawValue: index) else {
-                        return
+                        return nil
                     }
-                    self[index].update(absoluteIndex+index, relativeIndex)
+                    self[index].updateModel(absoluteIndex+index, relativeIndex)
                 }
                 
-                break
+                return nil
                 
             case Int(numberOfViews)-1:
                 var index = 0
                 for i in stride(from: self.count, through: 1, by: -1) {
                     guard let relativeIndex = RelativeIndex(rawValue: index * -1) else {
-                        return
+                        return nil
                     }
-                    self[i - 1].update(absoluteIndex+index, relativeIndex)
+                    self[i - 1].updateModel(absoluteIndex+index, relativeIndex)
                     index -= 1
                 }
                 
-                break
+                return nil
                 
             default:
                 
@@ -228,23 +233,36 @@ extension Array where Iterator.Element == ScrollViewModel {
                 */
                 
                 guard self.count >= 4 else {
-                    fatalError("Error: Index overflown")
+                    logError("Index overflown")
+                    return nil
                 }
                 
                 let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
-                
                 let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
                 
-                for i in 1...self.count {
-                    let index = i - 1 + indexShift
+                var returnIndex:Int?
+                
+                logVerbose("\n-ScrollViewModel.update(absoluteIndex:, numberOfViews:)")
+                
+                for i in 0...self.count-1 {
+                    let index = i + indexShift
                     guard let relativeIndex = RelativeIndex(rawValue: index) else {
-                        return
+                        return nil
                     }
-                    self[i-1].update(absoluteIndex+index, relativeIndex)
+                    self[i].updateModel(absoluteIndex+index, relativeIndex)
+                    
+                    returnIndex = absoluteIndex+index
+                    
+                    //logVerbose("    returnIndex: \(index)")
+                }
+                
+                if shouldMove3Positions == true {
+                    logVerbose("should return: \(returnIndex ?? -9999)")
+                    return returnIndex
                 }
                 
             }
         
-        
+        return nil
     }
 }

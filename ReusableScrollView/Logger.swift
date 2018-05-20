@@ -10,12 +10,23 @@ import Foundation
 
 public enum LegLevel:Int {
     case none
+    case error
     case warning
     case debug
     case verbose
 }
 
-public let LOG_LEVEL:LegLevel = .debug
+public let LOG_LEVEL:LegLevel = .verbose
+
+func logError(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    if LOG_LEVEL.rawValue >= LegLevel.error.rawValue {
+        #if DEBUG
+        Swift.print("❗️Error: \(items[0])", separator:separator, terminator: terminator)
+        #else
+        NSLog("Error: \(items[0])")
+        #endif
+    }
+}
 
 func logWarning(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     if LOG_LEVEL.rawValue >= LegLevel.warning.rawValue {

@@ -35,7 +35,15 @@ import UIKit
 
 @objc public protocol ReusableScrollViewDelegate: UIScrollViewDelegate {
     
-    func reusableScrollViewDidRequestView(reusableScrollView:ReusableScrollView, model:ScrollViewModel) -> ReusableView
+    /**
+     Called every time when the view needs to be represented by index that is not included in the pool.
+     I.e. It is called in the initialization step for all the views necessary.
+     If the number of views is 10 and current index is 3 it will be called 5 times - 2 for previous views, 1 for current and 2 for following views.
+     
+     When scroll view is scrolled in whichever direction, it will call the method (if necessary) to request the view for new index in the pool.
+     */
+    
+    func reusableScrollViewDidRequestView(atIndex:Int) -> UIView
     
     func reusableViewDidFocus(reusableView:ReusableView) -> Void
 }
@@ -152,7 +160,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
             return
         }
         
-        logVerbose("\n-scrollViewDidScroll")
+        logVerbose("\n-ReusableScrollView.scrollViewDidScroll")
         logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
         logVerbose("   Current index of view defined by event: \(scrollEngine.currentIndex)")
         logVerbose("   Following index of view calculated from scroll event: \(followingIndex)")
@@ -163,46 +171,6 @@ extension ReusableScrollView: UIScrollViewDelegate {
     }
     
 }
-
-//extension ReusableScrollView {
-//
-//    func delay(time:TimeInterval, closure: @escaping ()->()) ->  dispatch_cancelable_closure? {
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-//            closure()
-//        }
-//
-//
-//        var closure:dispatch_block_t? = closure
-//        var cancelableClosure:dispatch_cancelable_closure?
-//
-//        let delayedClosure:dispatch_cancelable_closure = { cancel in
-//            if let clsr = closure {
-//                if (cancel == false) {
-//                    DispatchQueue.async(DispatchQueue.main, clsr)
-//                }
-//            }
-//            closure = nil
-//            cancelableClosure = nil
-//        }
-//
-//        cancelableClosure = delayedClosure
-//
-//        dispatch_later {
-//            if let delayedClosure = cancelableClosure {
-//                delayedClosure(cancel: false)
-//            }
-//        }
-//
-//        return cancelableClosure;
-//    }
-//
-//    func cancel_delay(closure:dispatch_cancelable_closure?) {
-//        if closure != nil {
-//            closure!(cancel: true)
-//        }
-//    }
-//}
 
 extension ReusableScrollView {
     
@@ -240,14 +208,16 @@ extension ReusableScrollView {
         }
     }
     
-    public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel]) {
+    public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
-        logDebug("\n-didUpdateRelativeIndices(direction:, models:)")
+        logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
         
         for i in 0 ..< models.count {
             contentViews[i].viewModel = models[i]
             contentViews[i].updateFrame()
+            
+            
             
             logVerbose("   Current relative index of reusable view: \(models[i].relativeIndex.rawValue)")
             
@@ -269,8 +239,22 @@ extension ReusableScrollView {
             return
         }
         
-        let reusableView:ReusableView    = del.reusableScrollViewDidRequestView(reusableScrollView: self, model: model)
-        reusableView.viewModel           = model
+        let frame = CGRect(x: model.position.x,
+                           y: model.position.y,
+                           width: self.size.width,
+                           height: self.size.height)
+        
+        let reusableView                = ReusableView(frame: frame)
+        reusableView.viewModel          = model
+        
+        // !!!: Temorpary. Remove later
+        reusableView.backgroundColor    = .white
+        reusableView.alpha              = model.relativeIndex == .current ? 1 : 0.5
+        reusableView.layer.borderColor  = UIColor.red.cgColor;
+        reusableView.layer.borderWidth  = 1;
+        //
+        
+        reusableView.contentView        = del.reusableScrollViewDidRequestView(atIndex: model.absoluteIndex)
         
         self.addSubview(reusableView)
         

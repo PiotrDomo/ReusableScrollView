@@ -21,6 +21,9 @@
 
 @implementation ViewController
 
+@synthesize initialIndex;
+@synthesize numberOfViews;
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
@@ -39,15 +42,11 @@
 }
 
 - (NSUInteger)viewCount {
-    return 10;
+    return 12;
 }
 
-@synthesize initialIndex;
-
-@synthesize numberOfViews;
-
 - (NSUInteger)numberOfViews {
-    return 10;
+    return 12;
 }
 
 - (NSInteger)initialIndex {
@@ -69,19 +68,26 @@
     reusableView.layer.borderColor  = [UIColor redColor].CGColor;
     reusableView.layer.borderWidth  = 1;
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20.f, 20.f, 40.f, 80.f)];
-    label.tag = 1;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.image = [self imageForIndex:model.absoluteIndex];
     
-    [reusableView addSubview:label];
+    NSLog(@"%ld", model.absoluteIndex);
+    
+    reusableView.contentView = imageView;
     
     return reusableView;
 }
 
+- (UIImage *)imageForIndex:(NSUInteger)index {
+    NSString *imageName = [NSString stringWithFormat:@"image%ld_small", index+1];
+    
+    return [UIImage imageNamed:imageName];
+}
+
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
     
-    UILabel *label = (UILabel *)[reusableView viewWithTag:1];
     
-    label.text = [NSString stringWithFormat:@"%ld", reusableView.viewModel.absoluteIndex];
 }
 
 @end

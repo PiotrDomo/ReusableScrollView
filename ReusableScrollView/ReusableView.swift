@@ -25,7 +25,27 @@ import Foundation
 
 @objc open class ReusableView:UIView {
     
+    private weak var _contentView:UIView?
+    
     @objc public var viewModel:ScrollViewModel?
+    
+    @objc public var contentView:UIView? {
+        get {
+            return _contentView
+        }
+        set {
+            if _contentView?.isDescendant(of: self) != nil {
+                _contentView?.removeFromSuperview()
+            }
+            
+            guard let newView = newValue else {
+                return
+            }
+            
+            _contentView = newView
+            self.addSubview(newView)
+        }
+    }
     
     func updateFrame() {
         guard let model = viewModel else {
@@ -34,7 +54,7 @@ import Foundation
         
         self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
         
-        // TODO: Remove later
+        // !!!: Temorpary. Remove later
         
         if model.relativeIndex == RelativeIndex.current {
             self.alpha = 1

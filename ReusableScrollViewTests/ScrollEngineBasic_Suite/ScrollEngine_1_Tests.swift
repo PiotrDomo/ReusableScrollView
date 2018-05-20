@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import ScrollEngine
+@testable import ReusableScrollView
 
 /*
  Test configuration:
@@ -27,8 +27,10 @@ import XCTest
     4. Current model relative index: RelativeIndex.current
     5. Current model view position x: 200.0
     6. Next model view position x: 300.0
-    7. Previous model view position x: 100.0
-    8. Model view position y: 0.0
+    7. Appended index: 5
+    8. Previous model view position x: 100.0
+    9. Appended index: 0
+    10. Model view position y: 0.0
  
  */
 
@@ -36,12 +38,14 @@ import XCTest
 class ScrollEngine_1_Tests : ScrollEngineBase {
     
     let expectedNumberOfModels          = 5
-    let expectedRelativeIdices          = [-2,-1,0,1,2]
+    let expectedRelativeIndices         = [-2,-1,0,1,2]
     let expectedCurrentRelativeIndex    = RelativeIndex.current
     let expectedCurrentXPosition        = CGFloat(200)
     let expectedNextXPosition           = CGFloat(300)
     let expectedPreviousXPosition       = CGFloat(100)
     let expectedYPosition               = CGFloat(0)
+    let expectedApendedNextIndex        = 5
+    let expectedApendedPreviousIndex    = 0
     
     override func setUp() {
         super.setUp()
@@ -72,8 +76,8 @@ class ScrollEngine_1_Tests : ScrollEngineBase {
         var i = 0
         
         self.models.forEach { viewModel in
-            XCTAssertEqual(viewModel.relativeIndex.rawValue, expectedRelativeIdices[i],
-                           "\nTest Failed: Expected \(expectedRelativeIdices[i]) relative index but given \(viewModel.relativeIndex.rawValue)\n")
+            XCTAssertEqual(viewModel.relativeIndex.rawValue, expectedRelativeIndices[i],
+                           "\nTest Failed: Expected \(expectedRelativeIndices[i]) relative index but given \(viewModel.relativeIndex.rawValue)\n")
             i += 1
         }
     }
@@ -95,6 +99,9 @@ class ScrollEngine_1_Tests : ScrollEngineBase {
         XCTAssertEqual(currentModel?.position.x, expectedNextXPosition, "\nTest Failed: Expected `\(expectedNextXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         XCTAssertEqual(currentModel?.position.y, expectedYPosition, "\nTest Failed: Expected `\(expectedYPosition)` y position of the current view, but given `\(currentModel?.position.y ?? CGFloat(-9999.0))`\n")
         
+        // Test appended index
+        XCTAssertEqual(appendedIndex, expectedApendedNextIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedNextIndex)` but given \(appendedIndex ?? -9999)\n")
+        
     }
     
     func test_03_requestPrevious() {
@@ -114,6 +121,8 @@ class ScrollEngine_1_Tests : ScrollEngineBase {
         XCTAssertEqual(currentModel?.position.x, expectedPreviousXPosition, "\nTest Failed: Expected `\(expectedPreviousXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         XCTAssertEqual(currentModel?.position.y, expectedYPosition, "\nTest Failed: Expected `\(expectedYPosition)` y position of the current view, but given `\(currentModel?.position.y ?? CGFloat(-9999.0))`\n")
         
+        // Test appended index
+        XCTAssertEqual(appendedIndex, expectedApendedPreviousIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedPreviousIndex)` but given \(appendedIndex ?? -9999)\n")
     }
     
 }

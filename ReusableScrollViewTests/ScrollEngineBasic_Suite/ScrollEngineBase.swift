@@ -7,9 +7,12 @@
 //
 
 import XCTest
-@testable import ScrollEngine
+@testable import ReusableScrollView
 
 extension ScrollEngineBase: ScrollEngineDataSource {
+    var initialIndex: Int {
+        return absoluteIndex
+    }
     
     var numberOfViews: UInt {
         return self.viewsCount
@@ -22,7 +25,8 @@ extension ScrollEngineBase: ScrollEngineDataSource {
 
 extension ScrollEngineBase: ScrollEngineDelegate {
     
-    func didUpdateRelativeIndices(direction: ScrollingDirection, models:[ScrollViewModel]) {
+    func didUpdateRelativeIndices(direction: ScrollingDirection, models:[ScrollViewModel], addedIndex:Int?) {
+        appendedIndex = addedIndex
         scrollingDirection = direction
         relativeIndicesUpdateExpectation.fulfill()
     }
@@ -49,10 +53,11 @@ class ScrollEngineBase: XCTestCase {
     // Properties to test
     var models:[ScrollViewModel] = [ScrollViewModel]()
     var scrollingDirection:ScrollingDirection?
+    var appendedIndex:Int?
     
     lazy var scrollEngine:ScrollEngine = {
         
-        let scrollEngine = ScrollEngine(index: self.absoluteIndex)
+        let scrollEngine = ScrollEngine()
         scrollEngine.dataSource = self
         scrollEngine.delegate = self
             
