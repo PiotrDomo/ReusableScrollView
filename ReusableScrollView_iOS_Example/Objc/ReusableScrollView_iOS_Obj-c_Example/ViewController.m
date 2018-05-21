@@ -57,37 +57,46 @@
     return 2;
 }
 
-- (ReusableView * _Nonnull)reusableScrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView * _Nonnull)reusableScrollView
-                                                                            model:(ScrollViewModel * _Nonnull)model {
+- (UIView *)scrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView *)reusableScrollView atIndex:(NSInteger)atIndex {
     
-    CGRect frame = CGRectMake(model.position.x, model.position.y, self.size.width, self.size.height);
+    ReusableView *reusableView = [reusableScrollView reusableViewAtIndex:atIndex];
     
-    ReusableView *reusableView      = [[ReusableView alloc] initWithFrame:frame];
-    reusableView.backgroundColor    = [UIColor whiteColor];
-    reusableView.alpha              = model.relativeIndex == RelativeIndexCurrent ? 1 : 0.5;
-    reusableView.layer.borderColor  = [UIColor redColor].CGColor;
-    reusableView.layer.borderWidth  = 1;
+    if (reusableView) {
+        [((UIImageView *)reusableView.contentView) setImage:[self thumbForIndex:atIndex]];
+        return nil;
+    }
+    
+    CGRect reusableViewFrame = reusableView.frame;
+    CGRect frame = CGRectMake(CGRectGetMinX(reusableViewFrame), CGRectGetMinY(reusableViewFrame), self.size.width, self.size.height);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.image = [self imageForIndex:model.absoluteIndex];
+    imageView.image = [self thumbForIndex:atIndex];
     
-    NSLog(@"%ld", model.absoluteIndex);
+    NSLog(@"%ld", atIndex);
     
-    reusableView.contentView = imageView;
+    return imageView;
+}
+
+- (UIImage *)thumbForIndex:(NSUInteger)index {
+    NSString *imageName = [NSString stringWithFormat:@"image%ld_small", index+1];
     
-    return reusableView;
+    return [UIImage imageNamed:imageName];
 }
 
 - (UIImage *)imageForIndex:(NSUInteger)index {
-    NSString *imageName = [NSString stringWithFormat:@"image%ld_small", index+1];
+    NSString *imageName = [NSString stringWithFormat:@"image%ld", index+1];
     
     return [UIImage imageNamed:imageName];
 }
 
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
     
-    
+    if (reusableView.absoluteIndex > -1) {
+        NSLog(@"Load large image");
+        UIImage *image = [self imageForIndex:reusableView.absoluteIndex];
+        [((UIImageView *)reusableView.contentView) setImage:image];
+    }
 }
 
 @end

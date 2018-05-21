@@ -43,7 +43,7 @@ import UIKit
      When scroll view is scrolled in whichever direction, it will call the method (if necessary) to request the view for new index in the pool.
      */
     
-    func reusableScrollViewDidRequestView(atIndex:Int) -> UIView
+    func scrollViewDidRequestView(reusableScrollView:ReusableScrollView, atIndex:Int) -> UIView
     
     func reusableViewDidFocus(reusableView:ReusableView) -> Void
 }
@@ -74,12 +74,35 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
     }
     
+    // MARK: Lifecycle
+    
     override open func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         
         setup()
         
         scrollEngine.build()
+    }
+    
+    // MARK: Public
+    
+    @objc public func reusableView(atIndex:Int) -> ReusableView? {
+        var contentViews:[ReusableView] = self.subviews as! [ReusableView]
+        
+        logDebug("\n-ReusableScrollView.reusableView(atIndex:)")
+        
+        for i in 0 ..< contentViews.count {
+            guard let viewModel = contentViews[i].viewModel else {
+                continue
+            }
+            if viewModel.absoluteIndex == atIndex {
+                return contentViews[i]
+            }
+        }
+        
+        logDebug("   reusableView at index\(atIndex) not yet added")
+        
+        return nil
     }
     
     // MARK: Private
@@ -217,8 +240,6 @@ extension ReusableScrollView {
             contentViews[i].viewModel = models[i]
             contentViews[i].updateFrame()
             
-            
-            
             logVerbose("   Current relative index of reusable view: \(models[i].relativeIndex.rawValue)")
             
             guard models[i].relativeIndex == RelativeIndex.current else {
@@ -231,6 +252,18 @@ extension ReusableScrollView {
             
             focus()
         }
+        
+        guard
+            let newIndex = addedIndex,
+            let del = _delegate
+        else {
+            return
+        }
+        
+        // If there is new index added to the pool we request content of reusable view but we don't add new one
+        // as it should be already added to existing reusable view when called in -didRequestView(engine:model:) delegate method
+        let _ = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: newIndex)
+        
     }
     
     public func didRequestView(engine: ScrollEngine, model: ScrollViewModel) {
@@ -253,8 +286,8 @@ extension ReusableScrollView {
         reusableView.layer.borderColor  = UIColor.red.cgColor;
         reusableView.layer.borderWidth  = 1;
         //
-        
-        reusableView.contentView        = del.reusableScrollViewDidRequestView(atIndex: model.absoluteIndex)
+
+        reusableView.contentView        = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: model.absoluteIndex)
         
         self.addSubview(reusableView)
         

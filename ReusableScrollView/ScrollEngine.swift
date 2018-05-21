@@ -60,7 +60,7 @@ open class ScrollEngine:NSObject {
     }
     
     private var _models:[ScrollViewModel]?
-    private static var _maxPool:UInt = 5
+    static var _maxPool:UInt = 5
     
     // MARK: Lazy properties
     
@@ -240,7 +240,7 @@ extension Array where Iterator.Element == ScrollViewModel {
                 let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
                 let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
                 
-                var returnIndex:Int?
+                var indices = [Int]()
                 
                 logVerbose("\n-ScrollViewModel.update(absoluteIndex:, numberOfViews:)")
                 
@@ -251,18 +251,18 @@ extension Array where Iterator.Element == ScrollViewModel {
                     }
                     self[i].updateModel(absoluteIndex+index, relativeIndex)
                     
-                    returnIndex = absoluteIndex+index
-                    
-                    //logVerbose("    returnIndex: \(index)")
+                    indices.append(absoluteIndex+index)
                 }
                 
-                if shouldMove3Positions == true {
-                    logVerbose("should return: \(returnIndex ?? -9999)")
-                    return returnIndex
+                // If total number of views is less than 6
+                // maximum amount of indices are already assigned and no new will be added.
+                // In this case it is safe to return nil
+                if numberOfViews <= ScrollEngine._maxPool {
+                    return nil
                 }
+                
+                return direction == .next ? indices.max() : indices.min()
                 
             }
-        
-        return nil
     }
 }

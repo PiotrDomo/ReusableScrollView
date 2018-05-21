@@ -29,15 +29,31 @@ import Foundation
     
     @objc public var viewModel:ScrollViewModel?
     
+    @objc public var absoluteIndex:Int {
+        get {
+            guard let model = viewModel else {
+                return -1
+            }
+            return model.absoluteIndex
+        }
+    }
+    
     @objc public var contentView:UIView? {
         get {
             return _contentView
         }
         set {
-            if _contentView?.isDescendant(of: self) != nil {
+            // Check the same content view is not trying to be added again
+            guard _contentView != newValue else {
+                return
+            }
+            
+            // If some other content view is already added remove it
+            if _contentView?.isDescendant(of: self) == true {
                 _contentView?.removeFromSuperview()
             }
             
+            // Manke sure the new content view is passed 
             guard let newView = newValue else {
                 return
             }
