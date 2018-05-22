@@ -176,9 +176,12 @@ extension ScrollViewModel {
         return models
     }
     
-    fileprivate func updateModel(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex) {
+    fileprivate func updateModel(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex, _ shift:RelativeShift) {
         self.absoluteIndex = absoluteIndex
         self.relativeIndex = relativeIndex
+        
+        // update position
+        self.shift = shift
     }
     
 }
@@ -201,7 +204,7 @@ extension Array where Iterator.Element == ScrollViewModel {
                     guard let relativeIndex = RelativeIndex(rawValue: index) else {
                         return nil
                     }
-                    self[index].updateModel(absoluteIndex+index, relativeIndex)
+                    self[index].updateModel(absoluteIndex+index, relativeIndex, RelativeShift.none)
                 }
                 
                 return nil
@@ -212,7 +215,7 @@ extension Array where Iterator.Element == ScrollViewModel {
                     guard let relativeIndex = RelativeIndex(rawValue: index * -1) else {
                         return nil
                     }
-                    self[i - 1].updateModel(absoluteIndex+index, relativeIndex)
+                    self[i - 1].updateModel(absoluteIndex+index, relativeIndex, RelativeShift.none)
                     index -= 1
                 }
                 
@@ -249,7 +252,15 @@ extension Array where Iterator.Element == ScrollViewModel {
                     guard let relativeIndex = RelativeIndex(rawValue: index) else {
                         return nil
                     }
-                    self[i].updateModel(absoluteIndex+index, relativeIndex)
+                    
+                    var shift:RelativeShift = .none
+                    
+                    if indexShift == -2 {
+                        print("shift")
+                        shift = direction == .next ? .left : .right
+                    }
+                    
+                    self[i].updateModel(absoluteIndex+index, relativeIndex, shift)
                     
                     indices.append(absoluteIndex+index)
                 }

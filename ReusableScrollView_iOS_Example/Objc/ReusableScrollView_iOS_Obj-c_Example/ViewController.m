@@ -54,13 +54,13 @@
 }
     
 - (NSTimeInterval)focusDelay {
-    return 2;
+    return 0.5;
 }
 
 - (UIView *)scrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView *)reusableScrollView atIndex:(NSInteger)atIndex {
     
+    // In this case firs check the reusable view exists already
     ReusableView *reusableView = [reusableScrollView reusableViewAtIndex:atIndex];
-    
     if (reusableView) {
         [((UIImageView *)reusableView.contentView) setImage:[self thumbForIndex:atIndex]];
         return nil;
@@ -91,7 +91,7 @@
 }
 
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
-    
+    return;
     if (reusableView.absoluteIndex > -1) {
         NSLog(@"Load large image");
         UIImage *image = [self imageForIndex:reusableView.absoluteIndex];

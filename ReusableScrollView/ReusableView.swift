@@ -64,18 +64,15 @@ import Foundation
     }
     
     func updateFrame() {
+        
         guard let model = viewModel else {
             return
         }
         
-        self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
-        
-        // !!!: Temorpary. Remove later
-        
-        if model.relativeIndex == RelativeIndex.current {
-            self.alpha = 1
-        } else {
-            self.alpha = 0.5
+        if model.relativeIndex == .afterNext || model.relativeIndex == .beforePrevious {
+            UIView.animate(withDuration: 0.5) {
+                self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
+            }
         }
     }
     

@@ -62,19 +62,42 @@ import Foundation
     }
 }
 
+public enum RelativeShift:Int {
+    case left
+    case none
+    case right
+}
+
 @objc public final class ScrollViewModel:NSObject {
     
+    public var shift:RelativeShift = .none
     @objc public var absoluteIndex:Int = 0
     @objc public var relativeIndex:RelativeIndex = RelativeIndex.current
     
     @objc public var position:CGPoint {
         get {
-            var x:CGFloat = 0.0
             
-            if absoluteIndex > 0 {
-                x = _size.width * CGFloat(absoluteIndex)
+            switch shift {
+            
+            case .left:
+                if relativeIndex == .afterNext {
+                    let x = _size.width * CGFloat(absoluteIndex+5)
+                    return CGPoint(x: x, y: 0.0)
+                }
+                
+            case .right:
+                if relativeIndex == .beforePrevious {
+                    let x = _size.width * CGFloat(absoluteIndex-5)
+                    return CGPoint(x: x, y: 0.0)
+                }
+                
+            default:
+                let x = _size.width * CGFloat(absoluteIndex)
+                return CGPoint(x: x, y: 0.0)
+                
             }
             
+            let x = _size.width * CGFloat(absoluteIndex)
             return CGPoint(x: x, y: 0.0)
         }
     }
