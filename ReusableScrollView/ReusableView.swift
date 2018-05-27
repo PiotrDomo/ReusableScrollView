@@ -74,8 +74,7 @@ import Foundation
             return
         }
         
-        if (model.relativeIndex == .afterNext && model.shift != .none) ||
-           (model.relativeIndex == .beforePrevious && model.shift != .none) {
+        if (model.relativeIndex == .afterNext || model.relativeIndex == .beforePrevious) && model.shift != .none {
             
             UIView.animate(withDuration: 0.5) {
                 self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
