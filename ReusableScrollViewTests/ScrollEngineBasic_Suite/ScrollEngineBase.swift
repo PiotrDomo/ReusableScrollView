@@ -120,5 +120,8 @@ class ScrollEngineBase: XCTestCase {
     let test_4_config = (absoluteIndex: 2, numberOfViews: UInt(5))
     let test_5_config = (absoluteIndex: 3, numberOfViews: UInt(5))
     let test_6_config = (absoluteIndex: 2, numberOfViews: UInt(4))
+    let test_7_config = (absoluteIndex: 7, numberOfViews: UInt(13))
+    let test_8_config = (absoluteIndex: 7, numberOfViews: UInt(13))
+    let test_9_config = (absoluteIndex: 8, numberOfViews: UInt(15))
     
 }

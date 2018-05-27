@@ -25,6 +25,7 @@ import Foundation
 
 public enum ScrollingDirection:Int {
     case previous = -1
+    case none = 0
     case next = 1
 }
 
@@ -104,7 +105,7 @@ open class ScrollEngine:NSObject {
         
         _models = ScrollViewModel.modelSet(size: _screenSize, count: maxPool)
         
-        let _ = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
+        let _ = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.none)
         
         _models?.forEach { model in
             self.delegate?.didRequestView(engine:self, model: model)
@@ -176,12 +177,9 @@ extension ScrollViewModel {
         return models
     }
     
-    fileprivate func updateModel(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex, _ shift:RelativeShift) {
+    fileprivate func updateModel(_ absoluteIndex:Int, _ relativeIndex:RelativeIndex) {
         self.absoluteIndex = absoluteIndex
         self.relativeIndex = relativeIndex
-        
-        // update position
-        self.shift = shift
     }
     
 }
@@ -196,84 +194,102 @@ extension Array where Iterator.Element == ScrollViewModel {
     
     fileprivate func update(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
         
-            switch absoluteIndex {
-            case 0:
-                
-                for i in 1...self.count {
-                    let index = i - 1
-                    guard let relativeIndex = RelativeIndex(rawValue: index) else {
-                        return nil
-                    }
-                    self[index].updateModel(absoluteIndex+index, relativeIndex, RelativeShift.none)
-                }
-                
-                return nil
-                
-            case Int(numberOfViews)-1:
-                var index = 0
-                for i in stride(from: self.count, through: 1, by: -1) {
-                    guard let relativeIndex = RelativeIndex(rawValue: index * -1) else {
-                        return nil
-                    }
-                    self[i - 1].updateModel(absoluteIndex+index, relativeIndex, RelativeShift.none)
-                    index -= 1
-                }
-                
-                return nil
-                
-            default:
-                
-                /*
-                 Possibilities:
-                 
-                 -1, 0, 1
-                 -1, 0, 1, 2
-                 -1, 0, 1, 2, 3
-                 
-                 -2, -1, 0, 1
-                 -3, -2, -1, 0, 1
- 
-                */
-                
-                guard self.count >= 4 else {
-                    logError("Index overflown")
+        switch absoluteIndex {
+        case 0:
+            
+            for i in 1...self.count {
+                let index = i - 1
+                guard let relativeIndex = RelativeIndex(rawValue: index) else {
                     return nil
                 }
-                
-                let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
-                let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
-                
-                var indices = [Int]()
-                
-                logVerbose("\n-ScrollViewModel.update(absoluteIndex:, numberOfViews:)")
-                
-                for i in 0...self.count-1 {
-                    let index = i + indexShift
-                    guard let relativeIndex = RelativeIndex(rawValue: index) else {
-                        return nil
-                    }
-                    
-                    var shift:RelativeShift = .none
-                    
-                    if indexShift == -2 {
-                        print("shift")
-                        shift = direction == .next ? .left : .right
-                    }
-                    
-                    self[i].updateModel(absoluteIndex+index, relativeIndex, shift)
-                    
-                    indices.append(absoluteIndex+index)
-                }
-                
-                // If total number of views is less than 6
-                // maximum amount of indices are already assigned and no new will be added.
-                // In this case it is safe to return nil
-                if numberOfViews <= ScrollEngine._maxPool {
-                    return nil
-                }
-                
-                return direction == .next ? indices.max() : indices.min()
-                
+                self[index].updateModel(absoluteIndex+index, relativeIndex)
             }
+            
+            return nil
+            
+        case Int(numberOfViews)-1:
+            var index = 0
+            for i in stride(from: self.count, through: 1, by: -1) {
+                guard let relativeIndex = RelativeIndex(rawValue: index * -1) else {
+                    return nil
+                }
+                self[i - 1].updateModel(absoluteIndex+index, relativeIndex)
+                index -= 1
+            }
+            
+            return nil
+            
+        default:
+            
+            /*
+             Possibilities:
+             
+             -1, 0, 1
+             -1, 0, 1, 2
+             -1, 0, 1, 2, 3
+             
+             -2, -1, 0, 1
+             -3, -2, -1, 0, 1
+             
+             */
+            
+            guard self.count >= 4 else {
+                logError("Index overflown")
+                return nil
+            }
+            
+            let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
+            let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
+            
+            var indices = [Int]()
+            
+            logVerbose("\n-ScrollViewModel.update(absoluteIndex:, numberOfViews:)")
+            
+            for i in 0...self.count-1 {
+                let index = i + indexShift
+                guard let relativeIndex = RelativeIndex(rawValue: index) else {
+                    return nil
+                }
+                
+                self[i].updateModel(absoluteIndex+index, relativeIndex)
+                self[i].shift = shift(numberOfViews: numberOfViews, direction: direction, relativeIndex: relativeIndex)
+                
+                indices.append(absoluteIndex+index)
+            }
+            
+            // If total number of views is less than 6
+            // maximum amount of indices are already assigned and no new will be added.
+            // In this case it is safe to return nil
+            if numberOfViews <= ScrollEngine._maxPool {
+                return nil
+            }
+            
+            return direction == .next ? indices.max() : indices.min()
+            
+        }
+    }
+    
+    private func shift(numberOfViews:UInt, direction: ScrollingDirection, relativeIndex:RelativeIndex) -> RelativeShift {
+        
+        guard UInt(self.count) <= numberOfViews else {
+            return RelativeShift.none
+        }
+        
+        switch direction {
+        case .next:
+            if relativeIndex == .afterNext {
+                return .fromLeftToRight
+            }
+        case .previous:
+            if relativeIndex == .beforePrevious {
+                return .fromRightToLeft
+            }
+        
+        case .none:
+            return .none
+        }
+        
+        return .none
+        
     }
 }

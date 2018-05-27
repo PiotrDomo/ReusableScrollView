@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37B173A220BB39A500EA0742 /* ScrollEngine_7_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B173A120BB39A500EA0742 /* ScrollEngine_7_Tests.swift */; };
+		37B173A420BB3CD800EA0742 /* ScrollEngine_8_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B173A320BB3CD800EA0742 /* ScrollEngine_8_Tests.swift */; };
+		37B173A620BB428100EA0742 /* ScrollEngine_9_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B173A520BB428100EA0742 /* ScrollEngine_9_Tests.swift */; };
 		DF75D303209F4B1C00685DB1 /* ReusableScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF75D2F9209F4B1C00685DB1 /* ReusableScrollView.framework */; };
 		DF75D30A209F4B1C00685DB1 /* ReusableScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = DF75D2FC209F4B1C00685DB1 /* ReusableScrollView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DF75D322209F4CA100685DB1 /* ScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF75D31F209F4CA000685DB1 /* ScrollViewModel.swift */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		37B173A120BB39A500EA0742 /* ScrollEngine_7_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_7_Tests.swift; sourceTree = "<group>"; };
+		37B173A320BB3CD800EA0742 /* ScrollEngine_8_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_8_Tests.swift; sourceTree = "<group>"; };
+		37B173A520BB428100EA0742 /* ScrollEngine_9_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollEngine_9_Tests.swift; sourceTree = "<group>"; };
 		DF75D2F9209F4B1C00685DB1 /* ReusableScrollView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReusableScrollView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF75D2FC209F4B1C00685DB1 /* ReusableScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReusableScrollView.h; sourceTree = "<group>"; };
 		DF75D2FD209F4B1C00685DB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -126,6 +132,9 @@
 				DF75D32C209F4CE500685DB1 /* ScrollEngine_4_Tests.swift */,
 				DF75D328209F4CE500685DB1 /* ScrollEngine_5_Tests.swift */,
 				DF75D327209F4CE500685DB1 /* ScrollEngine_6_Tests.swift */,
+				37B173A120BB39A500EA0742 /* ScrollEngine_7_Tests.swift */,
+				37B173A320BB3CD800EA0742 /* ScrollEngine_8_Tests.swift */,
+				37B173A520BB428100EA0742 /* ScrollEngine_9_Tests.swift */,
 			);
 			path = ScrollEngineBasic_Suite;
 			sourceTree = "<group>";
@@ -252,8 +261,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37B173A620BB428100EA0742 /* ScrollEngine_9_Tests.swift in Sources */,
 				DF75D32F209F4CE500685DB1 /* ScrollEngine_5_Tests.swift in Sources */,
 				DF75D330209F4CE500685DB1 /* ScrollEngineBase.swift in Sources */,
+				37B173A420BB3CD800EA0742 /* ScrollEngine_8_Tests.swift in Sources */,
+				37B173A220BB39A500EA0742 /* ScrollEngine_7_Tests.swift in Sources */,
 				DF75D32D209F4CE500685DB1 /* ScrollEngine_3_Tests.swift in Sources */,
 				DF75D32E209F4CE500685DB1 /* ScrollEngine_6_Tests.swift in Sources */,
 				DF75D332209F4CE500685DB1 /* ScrollEngine_1_Tests.swift in Sources */,

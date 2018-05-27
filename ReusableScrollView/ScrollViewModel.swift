@@ -63,9 +63,9 @@ import Foundation
 }
 
 public enum RelativeShift:Int {
-    case left
+    case fromRightToLeft
     case none
-    case right
+    case fromLeftToRight
 }
 
 @objc public final class ScrollViewModel:NSObject {
@@ -77,27 +77,21 @@ public enum RelativeShift:Int {
     @objc public var position:CGPoint {
         get {
             
+            var x:CGFloat
+            
             switch shift {
-            
-            case .left:
-                if relativeIndex == .afterNext {
-                    let x = _size.width * CGFloat(absoluteIndex+5)
-                    return CGPoint(x: x, y: 0.0)
-                }
-                
-            case .right:
-                if relativeIndex == .beforePrevious {
-                    let x = _size.width * CGFloat(absoluteIndex-5)
-                    return CGPoint(x: x, y: 0.0)
-                }
-                
+
+            case .fromRightToLeft:
+                x = _size.width * CGFloat(absoluteIndex-5)
+
+            case .fromLeftToRight:
+                x = _size.width * CGFloat(absoluteIndex+5)
+
             default:
-                let x = _size.width * CGFloat(absoluteIndex)
-                return CGPoint(x: x, y: 0.0)
-                
+                x = _size.width * CGFloat(absoluteIndex)
+
             }
-            
-            let x = _size.width * CGFloat(absoluteIndex)
+
             return CGPoint(x: x, y: 0.0)
         }
     }
