@@ -203,10 +203,6 @@ class ScrollEngine_9_Tests : ScrollEngineBase {
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedPreviousIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedPreviousIndex)` but given \(appendedIndex ?? -9999)\n")
         
-        if let first = self.models.first {
-            XCTAssertEqual(first.shift, relativeShiftForPrevious, "\nTest Failed: Expected to be shifted `From Right To Left`\n")
-        }
-        
         // Test all models are marked with relative index and relative shift
         for i in 0...self.models.count-1 {
             

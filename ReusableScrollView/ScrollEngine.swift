@@ -210,7 +210,7 @@ extension Array where Iterator.Element == ScrollViewModel {
         case Int(numberOfViews)-1:
             var index = 0
             for i in stride(from: self.count, through: 1, by: -1) {
-                guard let relativeIndex = RelativeIndex(rawValue: index * -1) else {
+                guard let relativeIndex = RelativeIndex(rawValue: index) else {
                     return nil
                 }
                 self[i - 1].updateModel(absoluteIndex+index, relativeIndex)
@@ -271,7 +271,7 @@ extension Array where Iterator.Element == ScrollViewModel {
     
     private func shift(numberOfViews:UInt, direction: ScrollingDirection, relativeIndex:RelativeIndex) -> RelativeShift {
         
-        guard UInt(self.count) <= numberOfViews else {
+        guard UInt(self.count) < numberOfViews else {
             return RelativeShift.none
         }
         
