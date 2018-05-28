@@ -133,16 +133,19 @@ open class ScrollEngine:NSObject {
             return
         }
         
-        // We need `_models` array to swap positions before updating indices
-        _models?.swapAt(0, 4)
-        
-        _absoluteIndex += 1
-        
-        let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
-        
         guard let models = _models else {
             return
         }
+        
+        // We need `_models` array to swap positions before updating indices
+        if UInt(models.count) < _numberOfViews,
+            (models.first?.absoluteIndex)! < (models.last?.absoluteIndex)!-4 {
+            _models?.swapAt(0, 4)
+        }
+        
+        _absoluteIndex += 1
+        
+        let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
         
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.next, models: models, addedIndex: addedIndex)
         
@@ -159,14 +162,18 @@ open class ScrollEngine:NSObject {
             else {
                 return
         }
-        // We need `_models` array to swap positions before updating indices
-        _models?.swapAt(4, 0)
-        
-        let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
         
         guard let models = _models else {
             return
         }
+        
+        // We need `_models` array to swap positions before updating indices
+        if UInt(models.count) < _numberOfViews,
+            (models.last?.absoluteIndex)! > 4 {
+            _models?.swapAt(4, 0)
+        }
+        
+        let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
         
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.previous, models: models, addedIndex: addedIndex)
     }
