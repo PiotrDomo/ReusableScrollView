@@ -133,6 +133,9 @@ open class ScrollEngine:NSObject {
             return
         }
         
+        // We need `_models` array to swap positions before updating indices
+        _models?.swapAt(0, 4)
+        
         _absoluteIndex += 1
         
         let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
@@ -156,6 +159,8 @@ open class ScrollEngine:NSObject {
             else {
                 return
         }
+        // We need `_models` array to swap positions before updating indices
+        _models?.swapAt(4, 0)
         
         let addedIndex = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
         
@@ -282,11 +287,11 @@ extension Array where Iterator.Element == ScrollViewModel {
         
         switch direction {
         case .next:
-            if relativeIndex == .afterNext {
+            if relativeIndex == .beforePrevious {
                 return .fromLeftToRight
             }
         case .previous:
-            if relativeIndex == .beforePrevious {
+            if relativeIndex == .afterNext {
                 return .fromRightToLeft
             }
         
