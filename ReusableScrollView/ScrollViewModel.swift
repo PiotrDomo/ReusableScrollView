@@ -82,7 +82,18 @@ public enum RelativeShift:Int {
     @objc public var position:CGPoint {
         get {
             
-            var x = _size.width * CGFloat(absoluteIndex)
+            let index:Int
+            
+            switch shift {
+            case .fromLeftToRight:
+                index = 4
+            case .fromRightToLeft:
+                index = -4
+            case .none:
+                index = 0
+            }
+            
+            let x = _size.width * CGFloat(absoluteIndex+index)
 
             return CGPoint(x: x, y: 0.0)
         }
