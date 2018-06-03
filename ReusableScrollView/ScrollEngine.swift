@@ -28,10 +28,6 @@
 
 import Foundation
 
-extension Notification.Name {
-    static let update = Notification.Name("update indices")
-}
-
 public enum ScrollingDirection:Int {
     case previous = -1
     case none = 0
@@ -105,19 +101,6 @@ open class ScrollEngine:NSObject {
         
         return index
     }()
-    
-    // MARK: Lifecycle
-    
-    public override init() {
-        super.init()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateIndices(notfication:)), name: .update, object: nil)
-    }
-    
-    // MARK: Private
-    
-    @objc private func updateIndices(notfication: NSNotification) {
-        let _ = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.none)
-    }
     
     // MARK: Public
     

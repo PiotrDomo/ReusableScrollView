@@ -239,6 +239,10 @@ extension ReusableScrollView {
     public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
+        contentViews.sort {
+            return $0.absoluteIndex < $1.absoluteIndex
+        }
+        
         logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
         
         for i in 0 ..< models.count {
