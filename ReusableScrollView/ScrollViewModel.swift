@@ -75,16 +75,16 @@ public enum RelativeShift:Int {
 
 @objc public final class ScrollViewModel:NSObject {
     
-    private var _relativeShift:RelativeIndex = RelativeIndex.current
+    private var _relativeIndex:RelativeIndex = RelativeIndex.current
     public var shift:RelativeShift = .none
     @objc public var absoluteIndex:Int = 0
     @objc public var relativeIndex:RelativeIndex {
         get {
-            return _relativeShift
+            return _relativeIndex
         }
         
         set {
-            _relativeShift = newValue
+            _relativeIndex = newValue
         }
     }
     
@@ -93,18 +93,7 @@ public enum RelativeShift:Int {
     @objc public var position:CGPoint {
         get {
             
-            let index:Int
-            
-            switch shift {
-            case .fromLeftToRight:
-                index = 4
-            case .fromRightToLeft:
-                index = -4
-            case .none:
-                index = 0
-            }
-            
-            let x = _size.width * CGFloat(absoluteIndex+index)
+            let x = _size.width * CGFloat(absoluteIndex)
 
             return CGPoint(x: x, y: 0.0)
         }

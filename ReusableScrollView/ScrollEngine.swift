@@ -28,6 +28,10 @@
 
 import Foundation
 
+extension Notification.Name {
+    static let update = Notification.Name("update indices")
+}
+
 public enum ScrollingDirection:Int {
     case previous = -1
     case none = 0
@@ -102,6 +106,19 @@ open class ScrollEngine:NSObject {
         return index
     }()
     
+    // MARK: Lifecycle
+    
+    public override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateIndices(notfication:)), name: .update, object: nil)
+    }
+    
+    // MARK: Private
+    
+    @objc private func updateIndices(notfication: NSNotification) {
+        let _ = _models?.update(_absoluteIndex, _numberOfViews, ScrollingDirection.none)
+    }
+    
     // MARK: Public
     
     public func build() -> Void {
@@ -138,22 +155,15 @@ open class ScrollEngine:NSObject {
             return
         }
         
-        guard var models = _models else {
+        guard let models = _models else {
             return
-        }
-        
-        // We need tell `_models` array to change position of first model to be the last before updating indices
-        if UInt(models.count) < _numberOfViews {
-            let model:ScrollViewModel = models.removeFirst()
-            models.append(model)
         }
         
         _absoluteIndex += 1
         
-        let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
+        let addedIndex = models.prepareForSwipe(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
         
         logVerbose("   Added index: \(addedIndex ?? -1)")
-        
         _models = models
         
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.next, models: models, addedIndex: addedIndex)
@@ -174,20 +184,13 @@ open class ScrollEngine:NSObject {
                 return
         }
         
-        guard var models = _models else {
+        guard let models = _models else {
             return
         }
         
-        // We need tell `_models` array to change position of last model to be the first before updating indices
-        if UInt(models.count) < _numberOfViews {
-            let model:ScrollViewModel = models.removeLast()
-            models.insert(model, at: 0)
-        }
-        
-        let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
+        let addedIndex = models.prepareForSwipe(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
     
         logVerbose("   Added index: \(addedIndex ?? -1)")
-        
         _models = models
         
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.previous, models: models, addedIndex: addedIndex)
@@ -224,7 +227,23 @@ extension Array where Iterator.Element == ScrollViewModel {
  
     */
     
+    fileprivate func prepareForSwipe(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
+        return prepare(absoluteIndex: absoluteIndex, numberOfViews: numberOfViews, direction: direction, handler: { () -> ([Int]?) in
+            return self.prepareModels(numberOfViews: numberOfViews,
+                                      direction: direction,
+                                      absoluteIndex: absoluteIndex)
+        })
+    }
+    
     fileprivate func update(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
+        return prepare(absoluteIndex: absoluteIndex, numberOfViews: numberOfViews, direction: direction, handler: { () -> ([Int]?) in
+            return self.updateModels(numberOfViews: numberOfViews,
+                                     direction: direction,
+                                     absoluteIndex: absoluteIndex)
+        })
+    }
+    
+    fileprivate func prepare(absoluteIndex:Int, numberOfViews:UInt, direction: ScrollingDirection, handler: @escaping ()->([Int]?)) -> Int? {
         
         switch absoluteIndex {
         case 0:
@@ -254,6 +273,10 @@ extension Array where Iterator.Element == ScrollViewModel {
         default:
             
             /*
+             This is called whenever the absolute index is neither first of last
+            */
+            
+            /*
              Possibilities:
              
              -1, 0, 1
@@ -270,24 +293,10 @@ extension Array where Iterator.Element == ScrollViewModel {
                 return nil
             }
             
-            let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
-            let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
-            
-            var indices = [Int]()
+            let indices = handler()
             
             logVerbose("\n-ScrollViewModel.update(absoluteIndex:, numberOfViews:)")
             
-            for i in 0...self.count-1 {
-                let index = i + indexShift
-                guard let relativeIndex = RelativeIndex(rawValue: index) else {
-                    return nil
-                }
-                
-                self[i].updateModel(absoluteIndex+index, relativeIndex)
-                self[i].shift = shift(numberOfViews: numberOfViews, direction: direction, relativeIndex: relativeIndex)
-                
-                indices.append(absoluteIndex+index)
-            }
             
             // If total number of views is less than 6
             // maximum amount of indices are already assigned and no new will be added.
@@ -296,32 +305,83 @@ extension Array where Iterator.Element == ScrollViewModel {
                 return nil
             }
             
-            return direction == .next ? indices.max() : indices.min()
+            guard
+                let idxs = indices,
+                let max = idxs.max(),
+                let min = idxs.min()
+            else {
+                logError("Indices not found. Expected at least 5 indices to be present")
+                assertionFailure("Indices not found. Expected at least 5 indices to be present")
+                return nil
+            }
+            
+            return direction == .next ? max : min
             
         }
     }
     
-    private func shift(numberOfViews:UInt, direction: ScrollingDirection, relativeIndex:RelativeIndex) -> RelativeShift {
+    private func updateModels(numberOfViews:UInt, direction: ScrollingDirection, absoluteIndex:Int) -> [Int]? {
+        let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
+        let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
         
-        guard UInt(self.count) < numberOfViews else {
-            return RelativeShift.none
+        var indices = [Int]()
+        
+        for i in 0...self.count-1 {
+            let index = i + indexShift
+            guard let relativeIndex = RelativeIndex(rawValue: index) else {
+                return nil
+            }
+            
+            self[i].relativeIndex = relativeIndex
+            self[i].absoluteIndex = absoluteIndex+index
+            self[i].shift = .none
+            indices.append(absoluteIndex+index)
         }
+        
+        return indices
+    }
+    
+    private func prepareModels(numberOfViews:UInt, direction: ScrollingDirection, absoluteIndex:Int) -> [Int]? {
+        
+        guard
+            UInt(self.count) < numberOfViews,
+            let indices = updateModels(numberOfViews: numberOfViews, direction: direction, absoluteIndex: absoluteIndex)
+        else {
+            return nil
+        }
+        
+        manageAbsoluteIndices(indices: indices, direction: direction)
+        
+        return indices
+    }
+    
+    private func manageAbsoluteIndices(indices:[Int], direction:ScrollingDirection) {
+        
+        guard indices.isEmpty == false else {
+            logError("Indices are empty. Expected at least 5 indices to be present")
+            assertionFailure("Indices are empty. Expected at least 5 indices to be present")
+            return
+        }
+        
+        var sortedIndices = indices
         
         switch direction {
         case .next:
-            if relativeIndex == .beforePrevious {
-                return .fromLeftToRight
-            }
+            let removed = sortedIndices.removeLast()
+            sortedIndices.insert(removed, at: 0)
+            self.first?.shift = .fromLeftToRight
+            
         case .previous:
-            if relativeIndex == .afterNext {
-                return .fromRightToLeft
-            }
-        
-        case .none:
-            return .none
+            let removed = sortedIndices.removeFirst()
+            sortedIndices.append(removed)
+            self.last?.shift = .fromRightToLeft
+            
+        default:
+            print("nothing to do")
         }
         
-        return .none
-        
+        for i in 0...self.count-1 {
+            self[i].absoluteIndex = sortedIndices[i]
+        }
     }
 }
