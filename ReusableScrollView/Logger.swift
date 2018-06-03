@@ -36,7 +36,7 @@ public enum LegLevel:Int {
     case verbose
 }
 
-public let LOG_LEVEL:LegLevel = .none
+public let LOG_LEVEL:LegLevel = .verbose
 
 func logError(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     if LOG_LEVEL.rawValue >= LegLevel.error.rawValue {

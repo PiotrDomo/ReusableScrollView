@@ -33,7 +33,6 @@ import Foundation
     private weak var _contentView:UIView?
     
     @objc public var viewModel:ScrollViewModel?
-    
     @objc public var absoluteIndex:Int {
         get {
             guard let model = viewModel else {
@@ -75,9 +74,10 @@ import Foundation
         }
         
         if (model.shift != .none) {
-            
-            UIView.animate(withDuration: 0.5) {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
+            }) { _ in
+                model.shift = .none
             }
         }
     }

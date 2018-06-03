@@ -106,6 +106,8 @@ open class ScrollEngine:NSObject {
     
     public func build() -> Void {
         
+        logDebug("\n-ScrollEngine.build()")
+        
         let maxPool:UInt = _numberOfViews > ScrollEngine._maxPool ? ScrollEngine._maxPool : _numberOfViews
         
         _models = ScrollViewModel.modelSet(size: _screenSize, count: maxPool)
@@ -125,6 +127,9 @@ open class ScrollEngine:NSObject {
     }
     
     public func next() -> Void {
+        
+        logDebug("\n-ScrollEngine.next()")
+        
         guard
             _numberOfViews > 0,
             _numberOfViews > _absoluteIndex+1,
@@ -133,25 +138,31 @@ open class ScrollEngine:NSObject {
             return
         }
         
-        guard let models = _models else {
+        guard var models = _models else {
             return
         }
         
-        // We need `_models` array to swap positions before updating indices
-        if UInt(models.count) < _numberOfViews,
-            (models.first?.absoluteIndex)! < (models.last?.absoluteIndex)!-4 {
-            _models?.swapAt(0, 4)
+        // We need tell `_models` array to change position of first model to be the last before updating indices
+        if UInt(models.count) < _numberOfViews {
+            let model:ScrollViewModel = models.removeFirst()
+            models.append(model)
         }
         
         _absoluteIndex += 1
         
         let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.next)
         
+        logVerbose("   Added index: \(addedIndex ?? -1)")
+        
+        _models = models
+        
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.next, models: models, addedIndex: addedIndex)
         
     }
     
     public func previous() -> Void {
+        
+        logDebug("\n-ScrollEngine.previous()")
         
         _absoluteIndex -= 1
         
@@ -163,17 +174,21 @@ open class ScrollEngine:NSObject {
                 return
         }
         
-        guard let models = _models else {
+        guard var models = _models else {
             return
         }
         
-        // We need `_models` array to swap positions before updating indices
-        if UInt(models.count) < _numberOfViews,
-            (models.last?.absoluteIndex)! > 4 {
-            _models?.swapAt(4, 0)
+        // We need tell `_models` array to change position of last model to be the first before updating indices
+        if UInt(models.count) < _numberOfViews {
+            let model:ScrollViewModel = models.removeLast()
+            models.insert(model, at: 0)
         }
         
         let addedIndex = models.update(_absoluteIndex, _numberOfViews, ScrollingDirection.previous)
+    
+        logVerbose("   Added index: \(addedIndex ?? -1)")
+        
+        _models = models
         
         delegate?.didUpdateRelativeIndices(direction: ScrollingDirection.previous, models: models, addedIndex: addedIndex)
     }
