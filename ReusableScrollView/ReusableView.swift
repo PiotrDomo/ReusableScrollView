@@ -74,10 +74,11 @@ import Foundation
         }
         
         if (model.shift != .none) {
+            
             UIView.animate(withDuration: 0.5, animations: {
                 self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
             }) { _ in
-                //NotificationCenter.default.post(name: .update, object: nil)
+                self.backgroundColor = .red
             }
         }
     }

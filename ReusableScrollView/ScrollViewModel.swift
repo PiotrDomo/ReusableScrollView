@@ -82,7 +82,6 @@ public enum RelativeShift:Int {
         get {
             return _relativeIndex
         }
-        
         set {
             _relativeIndex = newValue
         }

@@ -79,6 +79,10 @@ open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineD
         }
     }
     
+    lazy private var contentViews:[ReusableView] = {
+        return self.subviews as! [ReusableView]
+    }()
+    
     // MARK: Lifecycle
     
     override open func willMove(toWindow newWindow: UIWindow?) {
@@ -237,14 +241,9 @@ extension ReusableScrollView {
     }
     
     public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
-        var contentViews:[ReusableView] = self.subviews as! [ReusableView]
-        
-        contentViews.sort {
-            return $0.absoluteIndex < $1.absoluteIndex
-        }
         
         logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
-        
+
         for i in 0 ..< models.count {
             contentViews[i].viewModel = models[i]
             contentViews[i].updateFrame()
@@ -256,10 +255,17 @@ extension ReusableScrollView {
             }
             
             task = DispatchWorkItem {
-                self._delegate?.reusableViewDidFocus(reusableView: contentViews[i])
+                self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
             }
             
             focus()
+        }
+        
+        // We need to sort the views by index value
+        // so when the next time relative indices are called to be updated
+        // we can work on the views that are correctly arranged
+        contentViews.sort {
+            return $0.absoluteIndex < $1.absoluteIndex
         }
         
         guard
