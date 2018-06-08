@@ -212,17 +212,21 @@ extension Array where Iterator.Element == ScrollViewModel {
     
     fileprivate func prepareForSwipe(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
         return prepare(absoluteIndex: absoluteIndex, numberOfViews: numberOfViews, direction: direction, handler: { () -> ([Int]?) in
+            
             return self.prepareModels(numberOfViews: numberOfViews,
                                       direction: direction,
                                       absoluteIndex: absoluteIndex)
+            
         })
     }
     
     fileprivate func update(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
         return prepare(absoluteIndex: absoluteIndex, numberOfViews: numberOfViews, direction: direction, handler: { () -> ([Int]?) in
+            
             return self.updateModels(numberOfViews: numberOfViews,
                                      direction: direction,
                                      absoluteIndex: absoluteIndex)
+            
         })
     }
     
@@ -333,7 +337,21 @@ extension Array where Iterator.Element == ScrollViewModel {
             return nil
         }
         
-        manageAbsoluteIndices(indices: indices, direction: direction)
+        // !!!: Consider a s abug
+        // Due to the difference of scrolling behavior between next and previous for now we need to implement following hot fix.
+        // When scrolling to the previous screen the update happens before the scroll comepleted
+        // but when scrolling to the next screen the update happens after the scroll completed
+        
+        var margin = numberOfViews-4
+        
+        if direction == .previous, 2...(margin) ~= UInt(absoluteIndex)  {
+            manageAbsoluteIndices(indices: indices, direction: direction)
+        }
+        
+        margin = numberOfViews-3
+        if direction == .next, 3...(margin) ~= UInt(absoluteIndex)  {
+            manageAbsoluteIndices(indices: indices, direction: direction)
+        }
         
         return indices
     }
