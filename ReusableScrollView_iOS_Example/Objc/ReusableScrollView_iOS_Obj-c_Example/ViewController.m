@@ -59,39 +59,32 @@
 
 - (UIView *)scrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView *)reusableScrollView atIndex:(NSInteger)atIndex {
     
-    // In this case firs check the reusable view exists already
+    // In this case first check the reusable view exists already
     ReusableView *reusableView = [reusableScrollView reusableViewAtIndex:atIndex];
-    if (reusableView) {
+    if ([reusableView.contentView isKindOfClass:[UIImageView class]]) {
         [((UIImageView *)reusableView.contentView) setImage:[self thumbForIndex:atIndex]];
         return nil;
     }
     
-    CGRect reusableViewFrame = reusableView.frame;
-    CGRect frame = CGRectMake(CGRectGetMinX(reusableViewFrame), CGRectGetMinY(reusableViewFrame), self.size.width, self.size.height);
-    
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[self thumbForIndex:atIndex]];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.image = [self thumbForIndex:atIndex];
-    
-    NSLog(@"%ld", atIndex);
     
     return imageView;
 }
 
 - (UIImage *)thumbForIndex:(NSUInteger)index {
-    NSString *imageName = [NSString stringWithFormat:@"image%ld_small", index+1];
+    NSString *imageName = [NSString stringWithFormat:@"image%ld_small", index];
     
     return [UIImage imageNamed:imageName];
 }
 
 - (UIImage *)imageForIndex:(NSUInteger)index {
-    NSString *imageName = [NSString stringWithFormat:@"image%ld", index+1];
+    NSString *imageName = [NSString stringWithFormat:@"image%ld", index];
     
     return [UIImage imageNamed:imageName];
 }
 
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
-    return;
     if (reusableView.absoluteIndex > -1) {
         NSLog(@"Load large image");
         UIImage *image = [self imageForIndex:reusableView.absoluteIndex];

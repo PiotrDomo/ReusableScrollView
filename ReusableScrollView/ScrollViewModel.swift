@@ -67,16 +67,10 @@ import Foundation
     }
 }
 
-public enum RelativeShift:Int {
-    case fromRightToLeft
-    case none
-    case fromLeftToRight
-}
-
 @objc public final class ScrollViewModel:NSObject {
     
     private var _relativeIndex:RelativeIndex = RelativeIndex.current
-    public var shift:RelativeShift = .none
+    public var shouldReposition = false
     @objc public var absoluteIndex:Int = 0
     @objc public var relativeIndex:RelativeIndex {
         get {

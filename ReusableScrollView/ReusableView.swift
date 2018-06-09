@@ -64,6 +64,7 @@ import Foundation
             
             _contentView = newView
             self.addSubview(newView)
+            addContraints()
         }
     }
     
@@ -73,9 +74,26 @@ import Foundation
             return
         }
         
-        if (model.shift != .none) {
+        if model.shouldReposition == true {
             self.frame = CGRect(x: model.position.x, y: model.position.y, width: self.bounds.width, height: self.bounds.height)
         }
     }
     
+}
+
+extension ReusableView {
+    
+    private func addContraints() {
+        
+        guard  let contentView = _contentView else {
+            return
+        }
+        
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addConstraint(NSLayoutConstraint(item: contentView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: contentView, attribute: .bottom, relatedBy: .equal, toItem: self, attribute:.bottom, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: contentView, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: contentView, attribute: .right, relatedBy: .equal, toItem: self, attribute:.right, multiplier: 1, constant: 0))
+    }
 }

@@ -11,9 +11,13 @@ import ReusableScrollView
 
 class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScrollViewDataSource {
     
+    
     @IBOutlet weak var scrollView: ReusableScrollView!
     
-    let viewsCount:UInt = 10
+    let viewsCount:UInt = 12
+    var focusDelay:TimeInterval = 0.5
+    var initialIndex: Int = 7
+    var numberOfViews: UInt = 12
     
     lazy private var _size:CGSize = {
         return scrollView.bounds.size
@@ -33,31 +37,48 @@ class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScro
     
     // MARK: ReusableScrollViewDelegate
     
-    func reusableScrollViewDidRequestView(reusableScrollView:ReusableScrollView, model:ScrollViewModel) -> ReusableView {
-        let frame = CGRect(x: model.position.x, y: model.position.y, width: _size.width, height: _size.height)
-        
-        let reusableView:ReusableView    = ReusableView(frame: frame)
-        reusableView.backgroundColor     = UIColor.white
-        reusableView.alpha               = model.relativeIndex == RelativeIndex.current ? 1 : 0.5
-        reusableView.layer.borderColor   = UIColor.red.cgColor
-        reusableView.layer.borderWidth   = 1
-        
-        return reusableView
-    }
-    
     func reusableViewDidFocus(reusableView:ReusableView) -> Void {
-        //
+        guard reusableView.absoluteIndex >= 0 else {
+            return
+        }
+        
+        guard let contentView = reusableView.contentView as? UIImageView else {
+            return
+        }
+        
+        contentView.image = image(at: UInt(reusableView.absoluteIndex))
     }
     
-    // MARK: ScrollEngineDataSource
-    
-    var initialIndex: Int {
-        return 7
+    func scrollViewDidRequestView(reusableScrollView: ReusableScrollView, atIndex: Int) -> UIView {
+        // In this case first check the reusable view exists already
+        let reusableView = reusableScrollView.reusableView(atIndex: atIndex)
+        
+        // Confirm the content view is type of `UIimageView`
+        guard
+            let contentView = reusableView?.contentView as? UIImageView
+        else {
+            
+            let thumbs = thumb(at: UInt(atIndex))
+            let imageView = UIImageView(image: thumbs)
+            imageView.contentMode = .scaleAspectFit
+
+            return imageView;
+        }
+        
+        contentView.image = thumb(at: UInt(reusableView!.absoluteIndex))
+        return contentView;
+        
     }
     
-    var numberOfViews: UInt {
-        return 10
+}
+
+extension ViewController {
+    func image(at index:UInt) -> UIImage? {
+        return UIImage(named: "image\(index)")
     }
     
+    func thumb(at index:UInt) -> UIImage? {
+        return UIImage(named: "image\(index)_small")
+    }
 }
 

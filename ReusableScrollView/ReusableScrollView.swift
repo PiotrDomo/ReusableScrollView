@@ -233,10 +233,19 @@ extension ReusableScrollView {
     }
     
     public func didFinishViewDecalration(engine: ScrollEngine, models: [ScrollViewModel]) {
-        models.forEach { model in
-            if model.relativeIndex == RelativeIndex.current {
-                self.contentOffset = model.position
+        for i in 0 ..< models.count {
+            if models[i].relativeIndex != RelativeIndex.current {
+                continue
             }
+            
+            self.contentOffset = models[i].position
+            
+            task = DispatchWorkItem {
+                self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
+            }
+            
+            focus()
+            
         }
     }
     
@@ -294,14 +303,8 @@ extension ReusableScrollView {
         
         let reusableView                = ReusableView(frame: frame)
         reusableView.viewModel          = model
-        
-        // !!!: Temorpary. Remove later
         reusableView.backgroundColor    = .white
-        reusableView.alpha              = model.relativeIndex == .current ? 1 : 0.5
-        reusableView.layer.borderColor  = UIColor.red.cgColor;
-        reusableView.layer.borderWidth  = 1;
-        //
-
+        
         reusableView.contentView        = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: model.absoluteIndex)
         
         self.addSubview(reusableView)

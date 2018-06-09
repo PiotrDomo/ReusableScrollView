@@ -321,7 +321,7 @@ extension Array where Iterator.Element == ScrollViewModel {
             
             self[i].relativeIndex = relativeIndex
             self[i].absoluteIndex = absoluteIndex+index
-            self[i].shift = .none
+            self[i].shouldReposition = false
             indices.append(absoluteIndex+index)
         }
         
@@ -337,7 +337,7 @@ extension Array where Iterator.Element == ScrollViewModel {
             return nil
         }
         
-        // !!!: Consider a s abug
+        // !!!: Consider as a bug
         // Due to the difference of scrolling behavior between next and previous for now we need to implement following hot fix.
         // When scrolling to the previous screen the update happens before the scroll comepleted
         // but when scrolling to the next screen the update happens after the scroll completed
@@ -370,12 +370,12 @@ extension Array where Iterator.Element == ScrollViewModel {
         case .next:
             let removed = sortedIndices.removeLast()
             sortedIndices.insert(removed, at: 0)
-            self.first?.shift = .fromLeftToRight
+            self.first?.shouldReposition = true
             
         case .previous:
             let removed = sortedIndices.removeFirst()
             sortedIndices.append(removed)
-            self.last?.shift = .fromRightToLeft
+            self.last?.shouldReposition = true
             
         default:
             print("nothing to do")
