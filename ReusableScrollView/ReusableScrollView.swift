@@ -303,7 +303,6 @@ extension ReusableScrollView {
         
         let reusableView                = ReusableView(frame: frame)
         reusableView.viewModel          = model
-        reusableView.backgroundColor    = .white
         
         reusableView.contentView        = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: model.absoluteIndex)
         
