@@ -209,7 +209,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
     
     // MARK: UIScrollViewdelegate
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         _lastContentOffset = scrollView.contentOffset.x
         
         guard let confTask = task else {
@@ -222,7 +222,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
         _delegate?.scrollViewWillBeginDragging?(scrollView)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // Simply check the half of the width of view was scrolled by defining what is going to be following index
         // If the following index is the same as cached index then the scroll should not happen
@@ -248,13 +248,13 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
     
     // MARK: ScrollEngineProtocol
     
-    var size: CGSize {
+    public var size: CGSize {
         get {
             return self.bounds.size
         }
     }
     
-    var numberOfViews: UInt {
+    public var numberOfViews: UInt {
         guard let source = dataSource else {
             return 0
         }
@@ -262,7 +262,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         return source.numberOfViews
     }
     
-    var initialIndex: Int {
+    public var initialIndex: Int {
         
         guard let source = dataSource else {
             return 0
@@ -272,7 +272,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         
     }
     
-    func didFinishViewDecalration(engine: ScrollEngine, models: [ScrollViewModel]) {
+    public func didFinishViewDecalration(engine: ScrollEngine, models: [ScrollViewModel]) {
         for i in 0 ..< models.count {
             if models[i].relativeIndex != RelativeIndex.current {
                 continue
@@ -289,7 +289,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         }
     }
     
-    func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
+    public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
         
         logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
 
@@ -330,7 +330,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         
     }
     
-    func didRequestView(engine: ScrollEngine, model: ScrollViewModel) {
+    public func didRequestView(engine: ScrollEngine, model: ScrollViewModel) {
         
         guard let del = _delegate else {
             return
