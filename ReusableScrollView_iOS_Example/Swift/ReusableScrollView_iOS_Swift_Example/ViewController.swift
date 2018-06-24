@@ -14,7 +14,6 @@ class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScro
     
     @IBOutlet weak var scrollView: ReusableScrollView!
     
-    let viewsCount:UInt = 12
     var focusDelay:TimeInterval = 0.5
     var initialIndex: Int = 7
     var numberOfViews: UInt = 12
@@ -26,7 +25,7 @@ class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScro
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let contentWidth = _size.width * CGFloat(viewsCount)
+        let contentWidth = _size.width * CGFloat(numberOfViews)
         
         scrollView.contentSize = CGSize(width: contentWidth, height: _size.height)
         scrollView.layer.borderColor = UIColor.black.cgColor

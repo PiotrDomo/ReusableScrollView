@@ -27,6 +27,8 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
+    self.viewCount = 12;
+    
     CGFloat contentWidth = self.size.width * (CGFloat)self.viewCount;
     
     self.scrollView.contentSize         = CGSizeMake(contentWidth, self.size.height);
@@ -39,10 +41,6 @@
 
 - (CGSize)size {
     return self.scrollView.bounds.size;
-}
-
-- (NSUInteger)viewCount {
-    return 12;
 }
 
 - (NSUInteger)numberOfViews {
