@@ -30,9 +30,29 @@ import UIKit
 
 @objc public protocol ReusableScrollViewDataSource: class {
     
+    /**
+     
+     Asks the data source to return the number of views in the reusable scroll view.
+     
+     */
+    
     var numberOfViews:UInt { get }
     
+    /**
+     
+     Required to define starting index of the scroll view.
+     
+     */
+    
     var initialIndex:Int { get }
+    
+    /**
+     
+     Asks the data source to return the delay time after which the current view will be replaced.
+     
+     - seealso: `reusableViewDidFocus(reusableView:ReusableView)`
+     
+     */
     
     var focusDelay:TimeInterval { get }
     
@@ -41,19 +61,39 @@ import UIKit
 @objc public protocol ReusableScrollViewDelegate: UIScrollViewDelegate {
     
     /**
+     
      Called every time when the view needs to be represented by index that is not included in the pool.
      I.e. It is called in the initialization step for all the views necessary.
      If the number of views is 10 and current index is 3 it will be called 5 times - 2 for previous views, 1 for current and 2 for following views.
      
      When scroll view is scrolled in whichever direction, it will call the method (if necessary) to request the view for new index in the pool.
+     Use this method to set up placeholder view .
+     
+     - parameters:
+     
+        - reusableView: reference to reusable view which is going to be called
+        - atIndex: index of reusable view that is going to be called
+     
      */
     
     func scrollViewDidRequestView(reusableScrollView:ReusableScrollView, atIndex:Int) -> UIView
     
+    /**
+     
+     This delegate method is called for every visible view after `focus delay` time elapsed. If the view is scrolled to the next view before `focus delay` has elapsed this method will not be called. Use this method to replace placeholder view with active view
+     
+     - parameters:
+     
+        - reusableView: current reusable view
+     
+     - seealso: `focusDelay:TimeInterval`
+     
+    */
+    
     func reusableViewDidFocus(reusableView:ReusableView) -> Void
 }
 
-open class ReusableScrollView: UIScrollView, ScrollEngineDelegate, ScrollEngineDataSource {
+open class ReusableScrollView: UIScrollView {
     
     // MARK: Properties
     
@@ -169,7 +209,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
     
     // MARK: UIScrollViewdelegate
     
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         _lastContentOffset = scrollView.contentOffset.x
         
         guard let confTask = task else {
@@ -182,7 +222,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
         _delegate?.scrollViewWillBeginDragging?(scrollView)
     }
     
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // Simply check the half of the width of view was scrolled by defining what is going to be following index
         // If the following index is the same as cached index then the scroll should not happen
@@ -204,17 +244,17 @@ extension ReusableScrollView: UIScrollViewDelegate {
     
 }
 
-extension ReusableScrollView {
+extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
     
     // MARK: ScrollEngineProtocol
     
-    public var size: CGSize {
+    var size: CGSize {
         get {
             return self.bounds.size
         }
     }
     
-    public var numberOfViews: UInt {
+    var numberOfViews: UInt {
         guard let source = dataSource else {
             return 0
         }
@@ -222,7 +262,7 @@ extension ReusableScrollView {
         return source.numberOfViews
     }
     
-    public var initialIndex: Int {
+    var initialIndex: Int {
         
         guard let source = dataSource else {
             return 0
@@ -232,7 +272,7 @@ extension ReusableScrollView {
         
     }
     
-    public func didFinishViewDecalration(engine: ScrollEngine, models: [ScrollViewModel]) {
+    func didFinishViewDecalration(engine: ScrollEngine, models: [ScrollViewModel]) {
         for i in 0 ..< models.count {
             if models[i].relativeIndex != RelativeIndex.current {
                 continue
@@ -249,7 +289,7 @@ extension ReusableScrollView {
         }
     }
     
-    public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
+    func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
         
         logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
 
@@ -290,7 +330,7 @@ extension ReusableScrollView {
         
     }
     
-    public func didRequestView(engine: ScrollEngine, model: ScrollViewModel) {
+    func didRequestView(engine: ScrollEngine, model: ScrollViewModel) {
         
         guard let del = _delegate else {
             return

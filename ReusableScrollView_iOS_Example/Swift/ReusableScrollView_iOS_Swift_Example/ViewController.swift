@@ -9,14 +9,10 @@
 import UIKit
 import ReusableScrollView
 
-class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScrollViewDataSource {
+class ViewController: UIViewController {
     
     
     @IBOutlet weak var scrollView: ReusableScrollView!
-    
-    var focusDelay:TimeInterval = 0.5
-    var initialIndex: Int = 7
-    var numberOfViews: UInt = 12
     
     lazy private var _size:CGSize = {
         return scrollView.bounds.size
@@ -30,11 +26,23 @@ class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScro
         scrollView.contentSize = CGSize(width: contentWidth, height: _size.height)
         scrollView.layer.borderColor = UIColor.black.cgColor
         scrollView.layer.borderWidth = 1
-
     }
-
     
-    // MARK: ReusableScrollViewDelegate
+}
+
+extension ViewController: ReusableScrollViewDelegate, ReusableScrollViewDataSource {
+    
+    var focusDelay:TimeInterval {
+        return 0.5
+    }
+    
+    var initialIndex: Int {
+        return 7
+    }
+    
+    var numberOfViews: UInt {
+        return 12
+    }
     
     func reusableViewDidFocus(reusableView:ReusableView) -> Void {
         guard reusableView.absoluteIndex >= 0 else {
@@ -55,20 +63,19 @@ class ViewController: UIViewController, ReusableScrollViewDelegate, ReusableScro
         // Confirm the content view is type of `UIimageView`
         guard
             let contentView = reusableView?.contentView as? UIImageView
-        else {
-            
-            let thumbs = thumb(at: UInt(atIndex))
-            let imageView = UIImageView(image: thumbs)
-            imageView.contentMode = .scaleAspectFit
-
-            return imageView;
+            else {
+                
+                let thumbs = thumb(at: UInt(atIndex))
+                let imageView = UIImageView(image: thumbs)
+                imageView.contentMode = .scaleAspectFit
+                
+                return imageView;
         }
         
         contentView.image = thumb(at: UInt(reusableView!.absoluteIndex))
         return contentView;
         
     }
-    
 }
 
 extension ViewController {
