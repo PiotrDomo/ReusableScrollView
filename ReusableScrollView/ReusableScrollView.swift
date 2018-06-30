@@ -124,12 +124,9 @@ open class ReusableScrollView: UIScrollView {
         return self.subviews as! [ReusableView]
     }()
     
-    lazy private var build:Bool = {
+    lazy private var build: () = {
         self.setup()
-        
         self.scrollEngine.build()
-        
-        return true
     }()
     
     // MARK: Lifecycle
