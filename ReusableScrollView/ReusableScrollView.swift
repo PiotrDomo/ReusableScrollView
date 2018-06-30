@@ -48,7 +48,7 @@ import UIKit
     
     /**
      
-     Asks the data source to return the delay time after which the current view will be replaced.
+     Asks the data source to return the delay time after which the current view will be replaced. Provide value 0 to invalidate delay.
      
      - seealso: `reusableViewDidFocus(reusableView:ReusableView)`
      
@@ -100,7 +100,7 @@ open class ReusableScrollView: UIScrollView {
     private let scrollEngine:ScrollEngine = ScrollEngine()
     weak private var _delegate:ReusableScrollViewDelegate?
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
-    var task:DispatchWorkItem?
+    private var task:DispatchWorkItem?
     
     override weak open var delegate: UIScrollViewDelegate? {
         get {
@@ -135,7 +135,28 @@ open class ReusableScrollView: UIScrollView {
     
     // MARK: Public
     
-    @objc public func reusableView(atIndex:Int) -> ReusableView? {
+    // TODO: Documentation
+    @objc public func reusableView(atRelativeIndex:RelativeIndex) -> ReusableView? {
+        var contentViews:[ReusableView] = self.subviews as! [ReusableView]
+        
+        logDebug("\n-ReusableScrollView.reusableView(atRelativeIndex:)")
+        
+        for i in 0 ..< contentViews.count {
+            guard let viewModel = contentViews[i].viewModel else {
+                continue
+            }
+            if viewModel.relativeIndex == atRelativeIndex {
+                return contentViews[i]
+            }
+        }
+        
+        logDebug("   reusableView at relative index \(atRelativeIndex) not yet added")
+        
+        return nil
+    }
+    
+    // TODO: Documentation
+    @objc public func reusableView(atAbsoluteIndex:Int) -> ReusableView? {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
         logDebug("\n-ReusableScrollView.reusableView(atIndex:)")
@@ -144,12 +165,12 @@ open class ReusableScrollView: UIScrollView {
             guard let viewModel = contentViews[i].viewModel else {
                 continue
             }
-            if viewModel.absoluteIndex == atIndex {
+            if viewModel.absoluteIndex == atAbsoluteIndex {
                 return contentViews[i]
             }
         }
         
-        logDebug("   reusableView at index \(atIndex) not yet added")
+        logDebug("   reusableView at index \(atAbsoluteIndex) not yet added")
         
         return nil
     }

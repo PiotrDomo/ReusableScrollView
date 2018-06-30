@@ -28,6 +28,7 @@
 
 import Foundation
 
+// TODO: Documentation
 @objc public enum RelativeIndex:Int {
     /*
      Overflown cases are usuaully used 

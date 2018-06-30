@@ -58,7 +58,7 @@ extension ViewController: ReusableScrollViewDelegate, ReusableScrollViewDataSour
     
     func scrollViewDidRequestView(reusableScrollView: ReusableScrollView, atIndex: Int) -> UIView {
         // In this case first check the reusable view exists already
-        let reusableView = reusableScrollView.reusableView(atIndex: atIndex)
+        let reusableView = reusableScrollView.reusableView(atAbsoluteIndex: atIndex)
         
         // Confirm the content view is type of `UIimageView`
         guard

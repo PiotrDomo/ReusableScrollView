@@ -58,7 +58,7 @@
 - (UIView *)scrollViewDidRequestViewWithReusableScrollView:(ReusableScrollView *)reusableScrollView atIndex:(NSInteger)atIndex {
     
     // In this case first check the reusable view exists already
-    ReusableView *reusableView = [reusableScrollView reusableViewAtIndex:atIndex];
+    ReusableView *reusableView = [reusableScrollView reusableViewAtAbsoluteIndex:atIndex];
     if ([reusableView.contentView isKindOfClass:[UIImageView class]]) {
         [((UIImageView *)reusableView.contentView) setImage:[self thumbForIndex:atIndex]];
         return nil;
