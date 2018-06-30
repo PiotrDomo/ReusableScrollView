@@ -101,6 +101,7 @@ open class ReusableScrollView: UIScrollView {
     weak private var _delegate:ReusableScrollViewDelegate?
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
     private var task:DispatchWorkItem?
+    var didFinishDeclaration: Bool = false
     
     override weak open var delegate: UIScrollViewDelegate? {
         get {
@@ -123,14 +124,20 @@ open class ReusableScrollView: UIScrollView {
         return self.subviews as! [ReusableView]
     }()
     
+    lazy private var build:Bool = {
+        self.setup()
+        
+        self.scrollEngine.build()
+        
+        return true
+    }()
+    
     // MARK: Lifecycle
     
-    override open func willMove(toWindow newWindow: UIWindow?) {
-        super.willMove(toWindow: newWindow)
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
         
-        setup()
-        
-        scrollEngine.build()
+        _ = build
     }
     
     // MARK: Public
@@ -245,6 +252,10 @@ extension ReusableScrollView: UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        guard didFinishDeclaration == true else {
+            return
+        }
+        
         // Simply check the half of the width of view was scrolled by defining what is going to be following index
         // If the following index is the same as cached index then the scroll should not happen
         let followingIndex = Int(floor((self.contentOffset.x - size.width / 2) / size.width))
@@ -299,15 +310,21 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
                 continue
             }
             
-            self.contentOffset = models[i].position
+            if let confTask = task {
+                confTask.cancel()
+            }
             
             task = DispatchWorkItem {
+                self.didFinishDeclaration = true
                 self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
             }
+            
+            self.contentOffset = models[i].position
             
             focus()
             
         }
+        
     }
     
     public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {
@@ -322,6 +339,10 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
             
             guard models[i].relativeIndex == RelativeIndex.current else {
                 continue
+            }
+            
+            if let confTask = task {
+                confTask.cancel()
             }
             
             task = DispatchWorkItem {

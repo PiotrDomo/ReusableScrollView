@@ -84,7 +84,7 @@
 
 - (void)reusableViewDidFocusWithReusableView:(ReusableView * _Nonnull)reusableView {
     if (reusableView.absoluteIndex > -1) {
-        NSLog(@"Load large image");
+        NSLog(@"Load large image at %ld", reusableView.absoluteIndex);
         UIImage *image = [self imageForIndex:reusableView.absoluteIndex];
         [((UIImageView *)reusableView.contentView) setImage:image];
     }
