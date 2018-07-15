@@ -213,6 +213,13 @@ extension Array where Iterator.Element == ScrollViewModel {
     fileprivate func prepareForSwipe(_ absoluteIndex:Int, _ numberOfViews:UInt, _ direction: ScrollingDirection) -> Int? {
         return prepare(absoluteIndex: absoluteIndex, numberOfViews: numberOfViews, direction: direction, handler: { () -> ([Int]?) in
             
+            // If total number of view is less than 5 (this is maximum number of ScrollViewModels`) then all necessary indices are initiated on build.
+            // No new indices will be requested. In this case only relative indices should be updated
+            guard UInt(self.count) < numberOfViews else {
+                self.updateRelativeIndicesOnly(numberOfViews: numberOfViews, direction: direction, absoluteIndex: absoluteIndex)
+                return nil
+            }
+            
             return self.prepareModels(numberOfViews: numberOfViews,
                                       direction: direction,
                                       absoluteIndex: absoluteIndex)
@@ -306,6 +313,8 @@ extension Array where Iterator.Element == ScrollViewModel {
             
         }
     }
+    
+    // MARK: Private 
     
     private func updateRelativeIndicesOnly(numberOfViews:UInt, direction: ScrollingDirection, absoluteIndex:Int) {
         let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
