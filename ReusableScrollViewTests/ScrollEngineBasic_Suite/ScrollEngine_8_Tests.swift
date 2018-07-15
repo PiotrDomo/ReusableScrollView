@@ -25,11 +25,9 @@ import XCTest
  5. Current model view position x: 700.0
  6. Next model view position x: 800.0
  7. Appended next index: 10
- 8. Relative shift for next: RelativeShift.fromLeftToRight
- 9. Previous model view position x: 700.0
- 10. Appended previous index: 5
- 11. Relative shift for previous: RelativeShift.fromRightToLeft
- 12. Model view position y: 0.0
+ 8. Previous model view position x: 700.0
+ 9. Appended previous index: 5
+ 10. Model view position y: 0.0
  
  */
 
@@ -44,8 +42,6 @@ class ScrollEngine_8_Tests : ScrollEngineBase {
     let expectedYPosition               = CGFloat(0)
     let expectedApendedNextIndex        = 10
     let expectedApendedPreviousIndex    = 5
-    let relativeShiftForNext            = RelativeShift.fromLeftToRight
-    let relativeShiftForPrevious        = RelativeShift.fromRightToLeft
     
     override func setUp() {
         super.setUp()
@@ -81,9 +77,6 @@ class ScrollEngine_8_Tests : ScrollEngineBase {
             XCTAssertEqual(viewModel.relativeIndex.rawValue, expectedRelativeIndices[i],
                            "\nTest Failed: Expected \(expectedRelativeIndices[i]) relative index but given \(viewModel.relativeIndex.rawValue)\n")
             
-            // All models should not be marked to be shifted in the initialization process
-            XCTAssertEqual(viewModel.shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
-            
             i += 1
         }
         
@@ -109,17 +102,6 @@ class ScrollEngine_8_Tests : ScrollEngineBase {
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedNextIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedNextIndex)` but given \(appendedIndex ?? -9999)\n")
         
-        // Test shifting
-        if let last = self.models.last {
-            XCTAssertEqual(last.shift, relativeShiftForNext, "\nTest Failed: Expected to be shifted `From Left To Right`\n")
-        }
-        
-        // Test all other models are not marked to be shifted
-        // Test all other models are not marked to be shifted
-        for i in 0...self.models.count-2 {
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
-        }
-        
         
         ////////// PREVIOUS //////////
         
@@ -140,15 +122,6 @@ class ScrollEngine_8_Tests : ScrollEngineBase {
         
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedPreviousIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedPreviousIndex)` but given \(appendedIndex ?? -9999)\n")
-        
-        if let first = self.models.first {
-            XCTAssertEqual(first.shift, relativeShiftForPrevious, "\nTest Failed: Expected to be shifted `From Right To Left`\n")
-        }
-        
-        // Test all other models are not marked to be shifted
-        for i in 1...self.models.count-1 {
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
-        }
         
     }
     

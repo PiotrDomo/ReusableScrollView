@@ -26,13 +26,9 @@ import XCTest
  6. Next model view position x: 300.0
  7. Next next model view position x: 400.0
  8. Appended next index: nil
- 9. Relative shift for next: RelativeShift.none
- 10. Relative shift for next next: RelativeShift.none
- 11. Previous model view position x: 300.0
- 12. Previous previous model view position x: 200.0
- 13. Appended previous index: nil
- 14. Relative shift for previous: RelativeShift.none
- 15. Relative shift for previous previous: RelativeShift.none
+ 9. Previous model view position x: 300.0
+ 10. Previous previous model view position x: 200.0
+ 11. Appended previous index: nil
  
  */
 
@@ -118,9 +114,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             XCTAssertEqual(viewModel.relativeIndex.rawValue, expectedRelativeIndices[i],
                            "\nTest Failed: Expected \(expectedRelativeIndices[i]) relative index but given \(viewModel.relativeIndex.rawValue)\n")
             
-            // All models should not be marked to be shifted in the initialization process
-            XCTAssertEqual(viewModel.shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
-            
             i += 1
         }
     }
@@ -149,8 +142,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndicesNext[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndicesNext[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     
@@ -178,8 +169,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndicesNextNext[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndicesNextNext[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     
@@ -207,8 +196,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndicesPrevious[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndicesPrevious[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     
@@ -236,8 +223,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndices2xPrevious[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndices2xPrevious[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     
@@ -265,8 +250,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndices3xPrevious[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndices3xPrevious[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     
@@ -294,8 +277,6 @@ class ScrollEngine_10_Tests : ScrollEngineBase {
             
             XCTAssertEqual(self.models[i].relativeIndex.rawValue, expectedRelativeIndices4xPrevious[i], "\nTest Failed: Expected relative index to be `\(expectedRelativeIndices4xPrevious[i])` but given `\(self.models[i].relativeIndex.rawValue)`\n")
             
-            // All other models are not marked to be shifted
-            XCTAssertEqual(self.models[i].shift, RelativeShift.none, "\nTest Failed: Expected not to be shifted at all\n")
         }
     }
     

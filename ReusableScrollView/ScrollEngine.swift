@@ -307,6 +307,21 @@ extension Array where Iterator.Element == ScrollViewModel {
         }
     }
     
+    private func updateRelativeIndicesOnly(numberOfViews:UInt, direction: ScrollingDirection, absoluteIndex:Int) {
+        let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
+        let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
+        
+        for i in 0...self.count-1 {
+            let index = i + indexShift
+            guard let relativeIndex = RelativeIndex(rawValue: index) else {
+                return
+            }
+            
+            self[i].relativeIndex = relativeIndex
+            self[i].shouldReposition = false
+        }
+    }
+    
     private func updateModels(numberOfViews:UInt, direction: ScrollingDirection, absoluteIndex:Int) -> [Int]? {
         let shouldMove3Positions = (absoluteIndex == Int(numberOfViews)-2) && self.count > 4
         let indexShift = absoluteIndex == 1 ? -1 : ( shouldMove3Positions ? -3 : -2)
@@ -334,6 +349,7 @@ extension Array where Iterator.Element == ScrollViewModel {
             UInt(self.count) < numberOfViews,
             let indices = updateModels(numberOfViews: numberOfViews, direction: direction, absoluteIndex: absoluteIndex)
         else {
+            updateRelativeIndicesOnly(numberOfViews: numberOfViews, direction: direction, absoluteIndex: absoluteIndex)
             return nil
         }
         

@@ -71,8 +71,8 @@ import Foundation
 @objc public final class ScrollViewModel:NSObject {
     
     private var _relativeIndex:RelativeIndex = RelativeIndex.current
+    private var _absoluteIndex:Int = 0
     public var shouldReposition = false
-    @objc public var absoluteIndex:Int = 0
     @objc public var relativeIndex:RelativeIndex {
         get {
             return _relativeIndex
@@ -82,6 +82,14 @@ import Foundation
         }
     }
     
+    @objc public var absoluteIndex:Int {
+        get {
+            return _absoluteIndex
+        }
+        set {
+            _absoluteIndex = newValue
+        }
+    }
     
     
     @objc public var position:CGPoint {
