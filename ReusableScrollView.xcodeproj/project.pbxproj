@@ -118,6 +118,7 @@
 		DF75D306209F4B1C00685DB1 /* ReusableScrollViewTests */ = {
 			isa = PBXGroup;
 			children = (
+				DFB09BA72100F33E001C628F /* ReusableScrollView_Suite */,
 				DF75D325209F4CE500685DB1 /* ScrollEngineBasic_Suite */,
 				DF75D309209F4B1C00685DB1 /* Info.plist */,
 			);
@@ -140,6 +141,13 @@
 				37B173A820BB4AE700EA0742 /* ScrollEngine_10_Tests.swift */,
 			);
 			path = ScrollEngineBasic_Suite;
+			sourceTree = "<group>";
+		};
+		DFB09BA72100F33E001C628F /* ReusableScrollView_Suite */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ReusableScrollView_Suite;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -22,15 +22,10 @@ import XCTest
  2. Current model: defined
  3. Current model absolute index: 8
  4. Current model relative index: RelativeIndex.current
- 5. Current model view position x: 800.0
- 6. Next model view position x: 900.0
- 7. Next next model view position x: 1000.0
- 8. Appended next index: 11
- 9. Appended next next index: 12
- 10. Previous model view position x: 900.0
- 11. Previous previous model view position x: 900.0
- 12. Appended previous index: 7
- 13. Appended previous previous index: 6
+ 5. Appended next index: 11
+ 6. Appended next next index: 12
+ 7. Appended previous index: 7
+ 8. Appended previous previous index: 6
  
  */
 
@@ -114,14 +109,8 @@ class ScrollEngine_9_Tests : ScrollEngineBase {
         // Test model marked `current` was found
         XCTAssertNotNil(currentModel, "\nTest Failed: Model marked `current` not found\n")
         
-        // Test absoluteIndex of current view is not the same as absoluteIndex in config
-        XCTAssertEqual(currentModel?.absoluteIndex, expectedNextAbsoluteIndex, "\nTest Failed: Expected `\(expectedNextAbsoluteIndex)` scroll view current model index but given `\(String(describing: currentModel?.absoluteIndex))`\n")
-        
         // Test scrolling direction is set up
         XCTAssertNotNil(scrollingDirection, "\nTest Failed: Scrolling direction not defined\n")
-        
-        // Test x positions of the current view
-        XCTAssertEqual(currentModel?.position.x, expectedNextXPosition, "\nTest Failed: Expected `\(expectedNextXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedNextIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedNextIndex)` but given \(appendedIndex ?? -9999)\n")
@@ -141,14 +130,8 @@ class ScrollEngine_9_Tests : ScrollEngineBase {
         // Test model marked `current` was found
         XCTAssertNotNil(currentModel, "\nTest Failed: Model marked `current` not found\n")
         
-        // Test absoluteIndex of current view is not the same as absoluteIndex in config
-        XCTAssertEqual(currentModel?.absoluteIndex, expectedNextNextAbsoluteIndex, "\nTest Failed: Expected `\(expectedNextNextAbsoluteIndex)` scroll view current model index but given `\(String(describing: currentModel?.absoluteIndex))`\n")
-        
         // Test scrolling direction is set up
         XCTAssertNotNil(scrollingDirection, "\nTest Failed: Scrolling direction not defined\n")
-        
-        // Test x positions of the current view
-        XCTAssertEqual(currentModel?.position.x, expectedNextNextXPosition, "\nTest Failed: Expected `\(expectedNextNextXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedNextNextIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedNextNextIndex)` but given \(appendedIndex ?? -9999)\n")
@@ -168,14 +151,8 @@ class ScrollEngine_9_Tests : ScrollEngineBase {
         // Test model marked `current` was found
         XCTAssertNotNil(currentModel, "\nTest Failed: Model marked `current` not found\n")
         
-        // Test absoluteIndex of current view is not the same as absoluteIndex in config
-        XCTAssertEqual(currentModel?.absoluteIndex, expectedPreviousAbsoluteIndex, "\nTest Failed: Expected `\(expectedPreviousAbsoluteIndex)` scroll view current model index but given `\(String(describing: currentModel?.absoluteIndex))`\n")
-        
         // Test scrolling direction is set up
         XCTAssertNotNil(scrollingDirection, "\nTest Failed: Scrolling direction not defined\n")
-        
-        // Test x positions of the current view
-        XCTAssertEqual(currentModel?.position.x, expectedPreviousXPosition, "\nTest Failed: Expected `\(expectedPreviousXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedPreviousIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedPreviousIndex)` but given \(appendedIndex ?? -9999)\n")
@@ -195,14 +172,8 @@ class ScrollEngine_9_Tests : ScrollEngineBase {
         // Test model marked `current` was found
         XCTAssertNotNil(currentModel, "\nTest Failed: Model marked `current` not found\n")
         
-        // Test absoluteIndex of current view is not the same as absoluteIndex in config
-        XCTAssertEqual(currentModel?.absoluteIndex, expectedPreviousPreviousAbsoluteIndex, "\nTest Failed: Expected `\(expectedPreviousPreviousAbsoluteIndex)` scroll view current model index but given `\(String(describing: currentModel?.absoluteIndex))`\n")
-        
         // Test scrolling direction is set up
         XCTAssertNotNil(scrollingDirection, "\nTest Failed: Scrolling direction not defined\n")
-        
-        // Test x positions of the current view
-        XCTAssertEqual(currentModel?.position.x, expectedPreviousPreviousXPosition, "\nTest Failed: Expected `\(expectedPreviousPreviousXPosition)` x position of the current view, but given `\(currentModel?.position.x ?? CGFloat(-9999.0))`\n")
         
         // Test appended index
         XCTAssertEqual(appendedIndex, expectedApendedPreviousPreviousIndex, "\nTest Failed: appendedIndex should be `\(expectedApendedPreviousPreviousIndex)` but given \(appendedIndex ?? -9999)\n")
