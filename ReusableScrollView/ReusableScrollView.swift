@@ -103,6 +103,16 @@ open class ReusableScrollView: UIScrollView {
     private var task:DispatchWorkItem?
     var didFinishDeclaration: Bool = false
     
+    override open var contentSize: CGSize {
+        get {
+            return super.contentSize
+        }
+        set {
+            super.contentSize = newValue
+            _ = build
+        }
+    }
+    
     override weak open var delegate: UIScrollViewDelegate? {
         get {
             return _delegate
@@ -129,13 +139,6 @@ open class ReusableScrollView: UIScrollView {
         self.scrollEngine.build()
     }()
     
-    // MARK: Lifecycle
-    
-    override open func didMoveToWindow() {
-        super.didMoveToWindow()
-        
-        _ = build
-    }
     
     // MARK: Public
     

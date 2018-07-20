@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		379545D520E03C6E0085D49C /* ReusableScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379545D220E03C5A0085D49C /* ReusableScrollView.framework */; };
-		379545D620E03C6E0085D49C /* ReusableScrollView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 379545D220E03C5A0085D49C /* ReusableScrollView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DF80778F21022EFE0018E6B0 /* ReusableScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */; };
+		DF80779021022EFE0018E6B0 /* ReusableScrollView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DF8BBB2E20AB40F500EA157C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8BBB2D20AB40F500EA157C /* AppDelegate.swift */; };
 		DF8BBB3020AB40F500EA157C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8BBB2F20AB40F500EA157C /* ViewController.swift */; };
 		DF8BBB3320AB40F500EA157C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF8BBB3120AB40F500EA157C /* Main.storyboard */; };
@@ -17,23 +17,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		379545D120E03C5A0085D49C /* PBXContainerItemProxy */ = {
+		DF80778B21022DFA0018E6B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */;
+			containerPortal = DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DF75D2F9209F4B1C00685DB1;
 			remoteInfo = ReusableScrollView;
 		};
-		379545D320E03C5A0085D49C /* PBXContainerItemProxy */ = {
+		DF80778D21022DFA0018E6B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */;
+			containerPortal = DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DF75D302209F4B1C00685DB1;
 			remoteInfo = ReusableScrollViewTests;
 		};
-		379545D720E03C6E0085D49C /* PBXContainerItemProxy */ = {
+		DF80779121022EFE0018E6B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */;
+			containerPortal = DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = DF75D2F8209F4B1C00685DB1;
 			remoteInfo = ReusableScrollView;
@@ -47,7 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				379545D620E03C6E0085D49C /* ReusableScrollView.framework in Embed Frameworks */,
+				DF80779021022EFE0018E6B0 /* ReusableScrollView.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -55,7 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReusableScrollView.xcodeproj; path = ../../../ReusableScrollView.xcodeproj; sourceTree = "<group>"; };
+		DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReusableScrollView.xcodeproj; path = ../../ReusableScrollView.xcodeproj; sourceTree = "<group>"; };
 		DF8BBB2A20AB40F500EA157C /* ReusableScrollView_iOS_Swift_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReusableScrollView_iOS_Swift_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8BBB2D20AB40F500EA157C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DF8BBB2F20AB40F500EA157C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -70,26 +70,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				379545D520E03C6E0085D49C /* ReusableScrollView.framework in Frameworks */,
+				DF80778F21022EFE0018E6B0 /* ReusableScrollView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		379545BD20E03C020085D49C /* Framework */ = {
+		DF80778721022DFA0018E6B0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */,
-			);
-			path = Framework;
-			sourceTree = "<group>";
-		};
-		379545CD20E03C5A0085D49C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				379545D220E03C5A0085D49C /* ReusableScrollView.framework */,
-				379545D420E03C5A0085D49C /* ReusableScrollViewTests.xctest */,
+				DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */,
+				DF80778E21022DFA0018E6B0 /* ReusableScrollViewTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,7 +89,7 @@
 		DF8BBB2120AB40F500EA157C = {
 			isa = PBXGroup;
 			children = (
-				379545BD20E03C020085D49C /* Framework */,
+				DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */,
 				DF8BBB2C20AB40F500EA157C /* ReusableScrollView_iOS_Swift_Example */,
 				DF8BBB2B20AB40F500EA157C /* Products */,
 			);
@@ -139,7 +131,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				379545D820E03C6E0085D49C /* PBXTargetDependency */,
+				DF80779221022EFE0018E6B0 /* PBXTargetDependency */,
 			);
 			name = ReusableScrollView_iOS_Swift_Example;
 			productName = ReusableScrollView_iOS_Swift_Example;
@@ -174,8 +166,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 379545CD20E03C5A0085D49C /* Products */;
-					ProjectRef = 379545CC20E03C5A0085D49C /* ReusableScrollView.xcodeproj */;
+					ProductGroup = DF80778721022DFA0018E6B0 /* Products */;
+					ProjectRef = DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -186,18 +178,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		379545D220E03C5A0085D49C /* ReusableScrollView.framework */ = {
+		DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ReusableScrollView.framework;
-			remoteRef = 379545D120E03C5A0085D49C /* PBXContainerItemProxy */;
+			remoteRef = DF80778B21022DFA0018E6B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		379545D420E03C5A0085D49C /* ReusableScrollViewTests.xctest */ = {
+		DF80778E21022DFA0018E6B0 /* ReusableScrollViewTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ReusableScrollViewTests.xctest;
-			remoteRef = 379545D320E03C5A0085D49C /* PBXContainerItemProxy */;
+			remoteRef = DF80778D21022DFA0018E6B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -228,10 +220,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		379545D820E03C6E0085D49C /* PBXTargetDependency */ = {
+		DF80779221022EFE0018E6B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ReusableScrollView;
-			targetProxy = 379545D720E03C6E0085D49C /* PBXContainerItemProxy */;
+			targetProxy = DF80779121022EFE0018E6B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -375,6 +367,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				INFOPLIST_FILE = ReusableScrollView_iOS_Swift_Example/Info.plist;
@@ -385,7 +378,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "sumofighter666.ReusableScrollView-iOS-Swift-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -395,6 +388,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				INFOPLIST_FILE = ReusableScrollView_iOS_Swift_Example/Info.plist;
@@ -405,7 +399,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "sumofighter666.ReusableScrollView-iOS-Swift-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
