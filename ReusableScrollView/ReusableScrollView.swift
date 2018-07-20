@@ -97,7 +97,7 @@ open class ReusableScrollView: UIScrollView {
     
     // MARK: Properties
     
-    private let scrollEngine:ScrollEngine = ScrollEngine()
+    private var scrollEngine:ScrollEngine = ScrollEngine()
     weak private var _delegate:ReusableScrollViewDelegate?
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
     private var task:DispatchWorkItem?
@@ -130,17 +130,27 @@ open class ReusableScrollView: UIScrollView {
         }
     }
     
-    lazy private var contentViews:[ReusableView] = {
+    private var _contentViews:[ReusableView]?
+    
+    private var contentViews:[ReusableView] {
         return self.subviews as! [ReusableView]
-    }()
+    }
     
     lazy private var build: () = {
         self.setup()
         self.scrollEngine.build()
     }()
     
-    
     // MARK: Public
+    
+    // TODO: Documentation
+    @objc public func reload() {
+        subviews.forEach{
+            $0.removeFromSuperview()
+        }
+        contentViews = [ReusableView]()
+        scrollEngine = ScrollEngine()
+    }
     
     // TODO: Documentation
     @objc public func reusableView(atRelativeIndex:RelativeIndex) -> ReusableView? {
@@ -346,6 +356,11 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
             }
             
             task = DispatchWorkItem {
+                
+                guard self.contentViews.isEmpty == false else {
+                    return
+                }
+                
                 self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
             }
             
