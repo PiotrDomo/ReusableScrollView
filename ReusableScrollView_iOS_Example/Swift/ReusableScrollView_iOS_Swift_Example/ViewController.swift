@@ -29,16 +29,9 @@ class ViewController: UIViewController {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { context in
-            
-            // Reset reusable scroll view
-            self.scrollView.reload().
-            
-        }) { [unowned self] context in
-            
-            let contentWidth = self._size.width * CGFloat(self.numberOfViews)
-            self.scrollView.contentSize = CGSize(width: contentWidth, height: self._size.height)
-        }
+        
+        let contentWidth = size.width * CGFloat(self.numberOfViews)
+        scrollView.contentSize = CGSize(width: contentWidth, height: size.height)
     }
     
 }

@@ -95,21 +95,44 @@ import UIKit
 
 open class ReusableScrollView: UIScrollView {
     
-    // MARK: Properties
+    // MARK: Private properties
     
-    private var scrollEngine:ScrollEngine = ScrollEngine()
     weak private var _delegate:ReusableScrollViewDelegate?
+    private var _scrollEngine:ScrollEngine = ScrollEngine()
+    private var _didFinishDeclaration: Bool = false
+    private var _task:DispatchWorkItem?
+    private var _lastContentOffset:CGFloat?
+    private var _cachedIndex:Int?
+    private var _contentViews:[ReusableView] = [ReusableView]()
+    private var _currentIndex:Int {
+        get {
+            return Int(self.contentOffset.x / size.width)
+        }
+    }
+    
+    lazy private var _build: () = {
+        self._scrollEngine.delegate = self
+        self._scrollEngine.dataSource = self
+        self._scrollEngine.build()
+        self._contentViews = self.subviews as! [ReusableView]
+        NotificationCenter.default.addObserver(self, selector: #selector(reload), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }()
+    
+    // MARK: Public properties
+    
     @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
-    private var task:DispatchWorkItem?
-    var didFinishDeclaration: Bool = false
     
     override open var contentSize: CGSize {
         get {
             return super.contentSize
         }
         set {
-            super.contentSize = newValue
-            _ = build
+            
+            if newValue != super.contentSize {
+                super.contentSize = newValue
+                _didFinishDeclaration = false
+                _ = _build
+            }
         }
     }
     
@@ -123,34 +146,13 @@ open class ReusableScrollView: UIScrollView {
         }
     }
     
-    private var _lastContentOffset:CGFloat?
-    private var _currentIndex:Int {
-        get {
-            return Int(self.contentOffset.x / size.width)
-        }
+    // MARK: Lifecycle
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
-    
-    private var _contentViews:[ReusableView]?
-    
-    private var contentViews:[ReusableView] {
-        return self.subviews as! [ReusableView]
-    }
-    
-    lazy private var build: () = {
-        self.setup()
-        self.scrollEngine.build()
-    }()
     
     // MARK: Public
-    
-    // TODO: Documentation
-    @objc public func reload() {
-        subviews.forEach{
-            $0.removeFromSuperview()
-        }
-        contentViews = [ReusableView]()
-        scrollEngine = ScrollEngine()
-    }
     
     // TODO: Documentation
     @objc public func reusableView(atRelativeIndex:RelativeIndex) -> ReusableView? {
@@ -194,29 +196,34 @@ open class ReusableScrollView: UIScrollView {
     
     // MARK: Private
     
-    private func setup() {
-    
-        scrollEngine.delegate = self
-        scrollEngine.dataSource = self
+    @objc private func reload() {
+        subviews.forEach{
+            $0.removeFromSuperview()
+        }
         
+        _scrollEngine = ScrollEngine()
+        _scrollEngine.delegate = self
+        _scrollEngine.dataSource = self
+        _scrollEngine.build()
+        _contentViews = self.subviews as! [ReusableView]
     }
     
     private func updateEngine() {
         
-        let adjustVariable = scrollEngine.currentIndex - _currentIndex
+        let adjustVariable = _scrollEngine.currentIndex - _currentIndex
         
         for _ in 0..<abs(adjustVariable) {
-            adjustVariable > 0 ? scrollEngine.previous() : scrollEngine.next()
+            adjustVariable > 0 ? _scrollEngine.previous() : _scrollEngine.next()
             
             logDebug("\n-updateEngine()")
             logDebug("Scroll engine updated")
-            logVerbose("   Current index of view defined by event: \(scrollEngine.currentIndex)")
+            logVerbose("   Current index of view defined by event: \(_scrollEngine.currentIndex)")
             logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
         }
     }
     
     private func focus() {
-        guard let time = self.dataSource?.focusDelay, let confTask = task else {
+        guard let time = self.dataSource?.focusDelay, let confTask = _task else {
             return
         }
         
@@ -250,19 +257,14 @@ extension ReusableScrollView: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         _lastContentOffset = scrollView.contentOffset.x
         
-        guard let confTask = task else {
-            _delegate?.scrollViewWillBeginDragging?(scrollView)
-            return
-        }
-        
-        confTask.cancel()
+        _task?.cancel()
         
         _delegate?.scrollViewWillBeginDragging?(scrollView)
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        guard didFinishDeclaration == true else {
+        guard _didFinishDeclaration == true else {
             return
         }
         
@@ -276,7 +278,7 @@ extension ReusableScrollView: UIScrollViewDelegate {
         
         logVerbose("\n-ReusableScrollView.scrollViewDidScroll")
         logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
-        logVerbose("   Current index of view defined by event: \(scrollEngine.currentIndex)")
+        logVerbose("   Current index of view defined by event: \(_scrollEngine.currentIndex)")
         logVerbose("   Following index of view calculated from scroll event: \(followingIndex)")
         
         updateEngine()
@@ -306,6 +308,10 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
     
     public var initialIndex: Int {
         
+        if let cachedIndex = _cachedIndex {
+            return cachedIndex
+        }
+        
         guard let source = dataSource else {
             return 0
         }
@@ -320,13 +326,12 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
                 continue
             }
             
-            if let confTask = task {
-                confTask.cancel()
-            }
+            _didFinishDeclaration = true
             
-            task = DispatchWorkItem {
-                self.didFinishDeclaration = true
-                self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
+            _task?.cancel()
+            
+            _task = DispatchWorkItem {
+                self._delegate?.reusableViewDidFocus(reusableView: self._contentViews[i])
             }
             
             self.contentOffset = models[i].position
@@ -342,8 +347,8 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         logDebug("\n-ReusableScrollView.didUpdateRelativeIndices(direction:, models:, addedIndex:?)")
 
         for i in 0 ..< models.count {
-            contentViews[i].viewModel = models[i]
-            contentViews[i].updateFrame()
+            _contentViews[i].viewModel = models[i]
+            _contentViews[i].updateFrame()
             
             logVerbose("   Current relative index of reusable view: \(models[i].relativeIndex.rawValue)")
             
@@ -351,17 +356,17 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
                 continue
             }
             
-            if let confTask = task {
-                confTask.cancel()
-            }
+            _cachedIndex = models[i].absoluteIndex
             
-            task = DispatchWorkItem {
+            _task?.cancel()
+            
+            _task = DispatchWorkItem {
                 
-                guard self.contentViews.isEmpty == false else {
+                guard self._contentViews.isEmpty == false else {
                     return
                 }
                 
-                self._delegate?.reusableViewDidFocus(reusableView: self.contentViews[i])
+                self._delegate?.reusableViewDidFocus(reusableView: self._contentViews[i])
             }
             
             focus()
@@ -370,7 +375,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
         // We need to sort the views by index value
         // so when the next time relative indices are called to be updated
         // we can work on the views that are correctly arranged
-        contentViews.sort {
+        _contentViews.sort {
             return $0.absoluteIndex < $1.absoluteIndex
         }
         
@@ -398,10 +403,10 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
                            width: self.size.width,
                            height: self.size.height)
         
-        let reusableView                = ReusableView(frame: frame)
-        reusableView.viewModel          = model
+        let reusableView = ReusableView(frame: frame)
+        reusableView.viewModel = model
         
-        reusableView.contentView        = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: model.absoluteIndex)
+        reusableView.contentView = del.scrollViewDidRequestView(reusableScrollView:self, atIndex: model.absoluteIndex)
         
         self.addSubview(reusableView)
         
