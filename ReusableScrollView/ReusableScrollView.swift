@@ -327,9 +327,8 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
             }
             
             _didFinishDeclaration = true
-            
             _task?.cancel()
-            
+    
             _task = DispatchWorkItem {
                 self._delegate?.reusableViewDidFocus(reusableView: self._contentViews[i])
             }
@@ -356,7 +355,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
                 continue
             }
             
-            _cachedIndex = models[i].absoluteIndex
+            _cachedIndex = _scrollEngine.currentIndex
             
             _task?.cancel()
             
