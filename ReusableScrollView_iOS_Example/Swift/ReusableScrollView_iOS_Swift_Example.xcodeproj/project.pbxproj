@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE17E33A22B7C04700464C07 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE17E33922B7C04700464C07 /* TableViewController.swift */; };
 		DF80778F21022EFE0018E6B0 /* ReusableScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */; };
 		DF80779021022EFE0018E6B0 /* ReusableScrollView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DF80778C21022DFA0018E6B0 /* ReusableScrollView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DF8BBB2E20AB40F500EA157C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8BBB2D20AB40F500EA157C /* AppDelegate.swift */; };
@@ -55,6 +56,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AE17E33922B7C04700464C07 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		DF80778621022DFA0018E6B0 /* ReusableScrollView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReusableScrollView.xcodeproj; path = ../../ReusableScrollView.xcodeproj; sourceTree = "<group>"; };
 		DF8BBB2A20AB40F500EA157C /* ReusableScrollView_iOS_Swift_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReusableScrollView_iOS_Swift_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8BBB2D20AB40F500EA157C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				DF8BBB2D20AB40F500EA157C /* AppDelegate.swift */,
 				DF8BBB2F20AB40F500EA157C /* ViewController.swift */,
+				AE17E33922B7C04700464C07 /* TableViewController.swift */,
 				DF8BBB3120AB40F500EA157C /* Main.storyboard */,
 				DF8BBB3420AB40F600EA157C /* Assets.xcassets */,
 				DF8BBB3620AB40F600EA157C /* LaunchScreen.storyboard */,
@@ -213,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF8BBB3020AB40F500EA157C /* ViewController.swift in Sources */,
+				AE17E33A22B7C04700464C07 /* TableViewController.swift in Sources */,
 				DF8BBB2E20AB40F500EA157C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,7 +371,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GR2W8CRL3T;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				INFOPLIST_FILE = ReusableScrollView_iOS_Swift_Example/Info.plist;
@@ -375,7 +379,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "sumofighter666.ReusableScrollView-iOS-Swift-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -388,7 +391,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GR2W8CRL3T;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../ReusableScrollView\"";
 				INFOPLIST_FILE = ReusableScrollView_iOS_Swift_Example/Info.plist;
@@ -396,7 +399,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "sumofighter666.ReusableScrollView-iOS-Swift-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
