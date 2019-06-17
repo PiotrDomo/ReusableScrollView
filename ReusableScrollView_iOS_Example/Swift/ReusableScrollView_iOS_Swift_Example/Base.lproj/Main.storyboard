@@ -45,7 +45,9 @@
         <!--Navigation Controller-->
         <scene sceneID="e3N-e0-mGT">
             <objects>
-                <navigationController id="yQb-TU-dKb" sceneMemberID="viewController">
+                <navigationController extendedLayoutIncludesOpaqueBars="YES" id="yQb-TU-dKb" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="O3J-kV-h83">
                         <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -77,11 +79,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="zAJ-fk-fuc" firstAttribute="top" secondItem="4gP-0j-caF" secondAttribute="top" id="1ms-Fx-lMI"/>
-                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="leading" secondItem="psI-02-Yxr" secondAttribute="leading" id="ZgA-ZQ-qif"/>
-                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="trailing" secondItem="psI-02-Yxr" secondAttribute="trailing" id="ePV-J2-IFb"/>
-                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="bottom" secondItem="psI-02-Yxr" secondAttribute="bottom" id="fVf-fe-4wF"/>
+                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="leading" secondItem="81t-tA-qQX" secondAttribute="leading" id="ZgA-ZQ-qif"/>
+                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="trailing" secondItem="81t-tA-qQX" secondAttribute="trailing" id="ePV-J2-IFb"/>
+                            <constraint firstItem="zAJ-fk-fuc" firstAttribute="bottom" secondItem="81t-tA-qQX" secondAttribute="bottom" id="fVf-fe-4wF"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="psI-02-Yxr"/>
+                        <viewLayoutGuide key="safeArea" id="81t-tA-qQX"/>
                     </view>
                     <connections>
                         <outlet property="scrollView" destination="zAJ-fk-fuc" id="w9U-fc-jjC"/>

@@ -148,6 +148,11 @@ open class ReusableScrollView: UIScrollView {
     
     // MARK: Lifecycle
     
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.isDirectionalLockEnabled = true
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
@@ -255,6 +260,16 @@ extension ReusableScrollView: UIScrollViewDelegate {
     // MARK: UIScrollViewdelegate
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        let actualPosition = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
+        
+        if actualPosition.y != 0 {
+            return
+        }
+        
+        if -5...5 ~= actualPosition.x {
+            return
+        }
+        
         _lastContentOffset = scrollView.contentOffset.x
         
         _task?.cancel()
