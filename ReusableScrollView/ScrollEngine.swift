@@ -83,10 +83,8 @@ open class ScrollEngine:NSObject {
     }()
     
     lazy private var _numberOfViews:UInt = {
-        guard
-            let count = self.dataSource?.numberOfViews
-            else {
-                return 0
+        guard let count = self.dataSource?.numberOfViews else {
+            return 0
         }
         
         return count
@@ -185,7 +183,12 @@ extension ScrollViewModel {
     
     fileprivate static func modelSet(size:CGSize, count:UInt) -> [ScrollViewModel]? {
         
+        
         var models:[ScrollViewModel] = [ScrollViewModel]()
+
+        guard count > 0 else {
+            return models
+        }
         
         for _ in 1 ... count {
             

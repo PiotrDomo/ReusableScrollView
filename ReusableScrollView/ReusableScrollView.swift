@@ -95,19 +95,33 @@ import UIKit
 
 open class ReusableScrollView: UIScrollView {
     
-    // MARK: Private properties
+    // MARK: - Private properties
     
-    weak private var _delegate:ReusableScrollViewDelegate?
+    private weak var _delegate:ReusableScrollViewDelegate?
+    
+    private var _isLandscape:Bool?
     private var _scrollEngine:ScrollEngine = ScrollEngine()
     private var _didFinishDeclaration: Bool = false
     private var _task:DispatchWorkItem?
     private var _lastContentOffset:CGFloat?
     private var _cachedIndex:Int?
     private var _contentViews:[ReusableView] = [ReusableView]()
+    
     private var _currentIndex:Int {
         get {
-            return Int(self.contentOffset.x / size.width)
+            return Int(contentOffset.x / size.width)
         }
+    }
+    
+    private var shouldUpdateScrollView:Bool {
+        if let isLandscape = _isLandscape,
+            (isLandscape == DeviceInfo.Orientation.isLandscape || !isLandscape == DeviceInfo.Orientation.isPortrait) {
+            return false
+        }
+        
+        _isLandscape = DeviceInfo.Orientation.isLandscape
+        
+        return true
     }
     
     lazy private var _build: () = {
@@ -118,9 +132,9 @@ open class ReusableScrollView: UIScrollView {
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }()
     
-    // MARK: Public properties
+    // MARK: - Public properties
     
-    @IBOutlet weak open var dataSource:ReusableScrollViewDataSource?
+    @IBOutlet open var dataSource:ReusableScrollViewDataSource?
     
     override open var contentSize: CGSize {
         get {
@@ -157,9 +171,19 @@ open class ReusableScrollView: UIScrollView {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
-    // MARK: Public
+    // MARK: - Public
     
-    // TODO: Documentation
+    /**
+     
+     Requests reuasable view associated to relative index.
+     
+     - parameters:
+     
+     - atRelativeIndex: relative index at which view should be returned
+     
+     - returns: reuasable view for provided index. If view is not available returns `nil`
+     
+     */
     @objc public func reusableView(atRelativeIndex:RelativeIndex) -> ReusableView? {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
@@ -179,7 +203,17 @@ open class ReusableScrollView: UIScrollView {
         return nil
     }
     
-    // TODO: Documentation
+    /**
+     
+     Requests reuasable view associated to absolute index.
+     
+     - parameters:
+     
+     - atAbsoluteIndex: absolute index at which view should be returned
+     
+     - returns: reuasable view for provided index. If view is not available returns `nil`
+     
+     */
     @objc public func reusableView(atAbsoluteIndex:Int) -> ReusableView? {
         var contentViews:[ReusableView] = self.subviews as! [ReusableView]
         
@@ -202,6 +236,11 @@ open class ReusableScrollView: UIScrollView {
     // MARK: Private
     
     @objc private func reload() {
+        
+        guard shouldUpdateScrollView == true else {
+            return
+        }
+        
         subviews.forEach{
             $0.removeFromSuperview()
         }
@@ -211,6 +250,29 @@ open class ReusableScrollView: UIScrollView {
         _scrollEngine.dataSource = self
         _scrollEngine.build()
         _contentViews = self.subviews as! [ReusableView]
+    }
+    
+    private func update(_ scrollView: UIScrollView) {
+        guard _didFinishDeclaration == true else {
+            return
+        }
+        
+        // Simply check the half of the width of view was scrolled by defining what is going to be following index
+        // If the following index is the same as cached index then the scroll should not happen
+        let followingIndex = Int(floor((contentOffset.x - size.width / 2) / size.width))
+        
+        guard followingIndex != _currentIndex else {
+            return
+        }
+        
+        logVerbose("\n-ReusableScrollView.scrollViewDidScroll")
+        logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
+        logVerbose("   Current index of view defined by event: \(_scrollEngine.currentIndex)")
+        logVerbose("   Following index of view calculated from scroll event: \(followingIndex)")
+        
+        updateEngine()
+        
+        _delegate?.scrollViewDidScroll?(scrollView)
     }
     
     private func updateEngine() {
@@ -228,7 +290,7 @@ open class ReusableScrollView: UIScrollView {
     }
     
     private func focus() {
-        guard let time = self.dataSource?.focusDelay, let confTask = _task else {
+        guard let time = dataSource?.focusDelay, let confTask = _task else {
             return
         }
         
@@ -278,27 +340,11 @@ extension ReusableScrollView: UIScrollViewDelegate {
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        guard _didFinishDeclaration == true else {
-            return
+        // It is ugly, but we need to delay for orientation update.
+        // Investigate better solution
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.update(scrollView)
         }
-        
-        // Simply check the half of the width of view was scrolled by defining what is going to be following index
-        // If the following index is the same as cached index then the scroll should not happen
-        let followingIndex = Int(floor((self.contentOffset.x - size.width / 2) / size.width))
-        
-        guard followingIndex != _currentIndex else {
-            return
-        }
-        
-        logVerbose("\n-ReusableScrollView.scrollViewDidScroll")
-        logVerbose("   Current index of view calculated from scroll view location: \(_currentIndex)")
-        logVerbose("   Current index of view defined by event: \(_scrollEngine.currentIndex)")
-        logVerbose("   Following index of view calculated from scroll event: \(followingIndex)")
-        
-        updateEngine()
-        
-        _delegate?.scrollViewDidScroll?(scrollView)
     }
     
 }
@@ -351,9 +397,7 @@ extension ReusableScrollView: ScrollEngineDelegate, ScrollEngineDataSource {
             self.contentOffset = models[i].position
             
             focus()
-            
         }
-        
     }
     
     public func didUpdateRelativeIndices(direction: ScrollingDirection, models: [ScrollViewModel], addedIndex: Int?) {

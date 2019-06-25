@@ -95,7 +95,9 @@ import Foundation
     @objc public var position:CGPoint {
         get {
             
-            let x = _size.width * CGFloat(absoluteIndex)
+            let width = DeviceInfo.Orientation.isLandscape ? _size.width : min(_size.width, _size.height)
+            
+            let x = width * CGFloat(absoluteIndex)
 
             return CGPoint(x: x, y: 0.0)
         }
